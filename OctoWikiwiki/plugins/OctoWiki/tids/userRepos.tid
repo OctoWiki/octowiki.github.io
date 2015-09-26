@@ -1,0 +1,18 @@
+title: $:/plugins/danielo515/OctoWiki/userTiddlers
+
+Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tiddler="$:/state/repositories/filter"></$edit-text>
+
+<table>
+<thead class="evenRow"><tr><td>Repository</td><td>Description</td></tr></thead>
+<$list filter="[prefix[$:/repositories/]search{$:/state/repositories/filter}]">
+<tr>
+    <td>
+        <$button class="tc-btn-invisible tc-tiddlylink">
+            <$action-sendmessage $message="tm-otw-load-repository" repository={{!!name}}/>
+            {{!!name}}
+        </$button>
+    </td>
+    <td>{{description}}</td>
+<tr>
+</$list>
+</table>

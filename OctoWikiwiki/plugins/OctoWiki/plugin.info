@@ -1,0 +1,8 @@
+{
+	"title": "$:/plugins/danielo515/OctoWiki",
+	"description": "OctoWiki for TiddlyWiki",
+	"author": "Danielo Rodriguez",
+	"core-version": ">=5.1.0",
+    "version": "0.1",
+	"list": "readme"
+}

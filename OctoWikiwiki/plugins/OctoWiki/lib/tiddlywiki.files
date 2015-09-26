@@ -1,0 +1,14 @@
+{
+	"tiddlers": [
+		{
+			"file": "github.js",
+			"fields": {
+				"type": "application/javascript",
+				"title": "$:/plugins/danielo515/OctoWiki/github.js",
+				"module-type": "library"
+			},
+			"prefix": "",
+			"suffix": ""
+		}        
+	]
+}
