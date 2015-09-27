@@ -1,3 +1,24 @@
 title: OctoWiki
 
-Welcome to OctoWiki, the online editor of Tiddlywiki5 repositories.
+{{$:/favicon.ico}}  Welcome to OctoWiki, the online editor of Tiddlywiki5 repositories that are hosted at Github.
+
+Octowiki is powered by:
+
+* [[Tiddlywiki|www.tiddlywiki.com]]: the most versatile,  non-linear notebook for capturing, organising and sharing complex information that you can never find.
+* [[Github.js|https://github.com/michael/github]]: A higher-level wrapper around the Github API. Intended for the browser and slightly modified to play well with Tiddlywiki
+
+Because of there is nothing better to edit tiddlers than a tiddlywiki, OctoWiki is itself a tiddlywiki wiki.
+Providing the closer experience of using a tiddlywiki while the tiddlers are saved to Github.
+
+Combine it with Travis-ci and you will have a wiki [[that you can edit online and publish directly to gh-pages|https://github.com/danielo515/TW5-auto-publish2gh-pages]].
+All the power of Tiddlywiki along with all Github's capabilities (collaborative editing, diff review, history...) !!!
+
+It is like a Markdown online editor (like [ext[prose.io|http://prose.io]]) but for Tiddlywiki!!
+
+<$transclude tiddler="Login" mode="block" />
+
+Have doubts?:
+
+ * Read the [[F.A.Q.]]
+ * Visit the [[project's repo]]
+ * Visit [[tiddlywiki's  official support group |https://groups.google.com/forum/#!forum/tiddlywiki]]

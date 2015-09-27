@@ -1,6 +1,6 @@
 title: Login
 
-In order to use the application you have to authorize it to use your github account.
+To use the application you have to authorize it through your Github's account.
 
 Don't have a token? [[How to get one|How to get a token]]
 
