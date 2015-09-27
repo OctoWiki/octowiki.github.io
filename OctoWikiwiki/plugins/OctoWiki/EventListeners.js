@@ -50,6 +50,10 @@ exports.startup = function(){
     $tw.rootWidget.addEventListener("tm-otw-set-token",function(event) {
         var token = event.paramObject.token;
         $tw.OTW.config.setToken(token);
+        if($tw.OTW.config.hasToken()) {
+            $tw.OTW.Login();
+            $tw.OTW.utils.setOpenTiddlers(['Repositories']);
+        }
     });
 
         logger.log("Event listeners attached");
