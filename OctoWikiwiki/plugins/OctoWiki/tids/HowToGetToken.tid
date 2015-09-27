@@ -1,0 +1,9 @@
+title: How to get a token
+
+# We have to create a `Personal access token` to allow Octowiki access our github account. Go to [Github's tokens management page](https://github.com/settings/tokens)
+# Create a new token clicking on `Generate new token`
+# Provide a meaningful token description. ''This is very important'' because it will be the only clue you will have to identify the token usage.
+# Make sure `repo` and `public_repo` options are selected
+# <span> Click on `Generate token`. Here is an overview of this step:
+<img src="https://raw.githubusercontent.com/danielo515/TW5-auto-publish2gh-pages/screenshots/github-token.png"/></span>
+# Github will generate an unique token. ''Take note of it now because you will not have any other opportinity!!''
