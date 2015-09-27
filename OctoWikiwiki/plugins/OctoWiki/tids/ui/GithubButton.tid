@@ -1,0 +1,23 @@
+title:  $:/plugins/danielo515/OctoWiki/ui/Buttons/Github
+tags: $:/tags/PageControls
+
+<$button popup=<<qualify "$:/state/popup/Github">>  class=<<tv-config-toolbar-class>> selectedClass="tc-selected">
+<$list filter="[<tv-config-toolbar-icons>prefix[yes]]">
+{{$:/core/images/github}}
+</$list>
+<$list filter="[<tv-config-toolbar-text>prefix[yes]]">
+Github
+</$list>
+</$button><$reveal state=<<qualify "$:/state/popup/Github">> type="popup" position="below" animate="yes">
+
+<div class="tc-drop-down">
+
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/GithubMenu]!has[draft.of]]" variable="listItem">
+
+<$transclude tiddler=<<listItem>> mode="inline"/>
+
+</$list>
+
+</div>
+
+</$reveal>

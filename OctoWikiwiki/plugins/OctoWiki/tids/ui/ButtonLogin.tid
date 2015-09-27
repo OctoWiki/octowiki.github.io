@@ -1,0 +1,11 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Buttons/Login
+tags: $:/tags/GithubMenu
+
+<$reveal type="nomatch" state="$:/state/OctoWiki/IsLogged" text="yes">
+<$button class="tc-btn-invisible tc-tiddlylink"
+aria-label = {{$:/plugins/danielo515/OctoWiki/language/Buttons/Login/Caption}}
+tooltip = {{$:/plugins/danielo515/OctoWiki/language/Buttons/Login/Caption}}>
+   <$action-navigate $to="Login" />
+          Login
+</$button>
+</$reveal>
