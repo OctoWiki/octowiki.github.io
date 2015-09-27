@@ -1,4 +1,4 @@
-title: $:/plugins/danielo515/OctoWiki/userTiddlers
+title: $:/plugins/danielo515/OctoWiki/userRepos
 
 Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tiddler="$:/state/repositories/filter"></$edit-text>
 
@@ -8,11 +8,12 @@ Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tid
 <tr>
     <td>
         <$button class="tc-btn-invisible tc-tiddlylink">
-            <$action-sendmessage $message="tm-otw-load-repository" repository={{!!name}}/>
+            <$action-sendmessage $message="tm-otw-load-repository" username={{!!owner-login}} repository={{!!name}}/>
             {{!!name}}
         </$button>
     </td>
-    <td>{{description}}</td>
-<tr>
+    <td>{{!!description}}</td>
+</tr>
+
 </$list>
 </table>

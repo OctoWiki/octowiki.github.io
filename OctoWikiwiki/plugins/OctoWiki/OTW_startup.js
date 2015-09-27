@@ -14,7 +14,7 @@ This included the OTW Object namespace and the loading of the token
 // Export name and synchronous status
 exports.name = "OctoWiki";
 exports.platforms = ["browser"];
-exports.after = ["startup"];
+exports.before = ["startup"];
 exports.synchronous = true;
 
     var CONFIG_PREFIX="$:/plugins/danielo515/OctoWiki/config/";
@@ -51,9 +51,9 @@ exports.startup = function(){
 
         function configFactory(){
             var storage = localStorage,
-                config = JSON.parse(storage.getItem('OctoConfig')) || { token:null},
+                config = JSON.parse(storage.getItem('OctoConfig')) || { token:undefined},
                 hasToken = function(){
-                    return config.token !== null;
+                    return config.token !== undefined;
                 },
                 setToken = function(token){
                     config.token=token;
@@ -75,7 +75,16 @@ exports.startup = function(){
 
         }
 
-        function listRepos(callback){
+    function setDefaultTiddlers(){
+        var unloggedUser=['OctoWiki','Login'],
+            loggedUser=['Repositories'],
+            tiddlersTitles = OTW.config.hasToken() ? loggedUser : unloggedUser;
+
+        $tw.wiki.setText('$:/DefaultTiddlers','text',null,tiddlersTitles.join('\n'));
+    }
+
+    //List all the repositories of the currently logged user
+    function listRepos(callback){
             if( OTW.user !== undefined){
                 OTW.user.repos(function (err,repos) {
                     callback(repos);
@@ -85,8 +94,31 @@ exports.startup = function(){
             }
         }
 
+    function getTiddlerType(path){
+        var type = $tw.utils.getFileExtensionInfo(path.substr(-4));
+        return type && type.type;
+    }
+
+    function loadTiddlerFile(path,repository,reponame,branch){
+        branch = branch || 'master';
+        logger.log("Fetching file: ",path, " from github");
+        repository.read(branch, path, function(err, data) {
+            var tiddlerFields =$tw.wiki.deserializeTiddlers(getTiddlerType(path),data);
+            tiddlerFields["otw-path"]=  path;
+            tiddlerFields["title"]= reponame + '/' + path;
+            tiddlerFields["otw-alias"]= tiddlerFields.title;
+
+            $tw.wiki.addTiddler(new $tw.Tiddler(tiddlerFields[0]));
+        });
+    }
+
+    //Receives a repository object and returns a tiddler containing all the
+    // repository information in tiddler's fields
         function repoToTiddler(repo){
             repo.title = "$:/repositories/" + repo.name;
+            $tw.utils.each(repo.owner,function(value,name){
+                repo['owner-'+name]=value;
+            });
             return new $tw.Tiddler( repo );
         }
 
@@ -102,23 +134,30 @@ exports.startup = function(){
         OTW.utils.newClient = newClient;
         OTW.utils.listRepos = listRepos;
         OTW.utils.addRepos= addRepos;
+        OTW.utils.getTiddlerType = getTiddlerType;
+        OTW.utils.loadTiddlerFile = loadTiddlerFile;
         OTW.config = configFactory();
         setDebug();
 
-        /* Here is where startup stuff really starts */
+        /* --- Here is where startup stuff really starts ---*/
 
         OTW.Github = require("$:/plugins/danielo515/OctoWiki/github.js").Github;
 
+    /*If we have a token already, we are ready to load the repositories*/
         if( OTW.config.hasToken()){
             OTW.client = newClient();
             OTW.user = OTW.client.getUser();
+            //List the repos and add them as tiddlers
+            listRepos(addRepos);
         }else{
             logger.log("There is no Token stored!");
         }
 
+        /* -- Load default tiddlers -- */
+        setDefaultTiddlers();
+
         $tw.OTW = OTW;
         logger.log("Github library loaded");
-        console.log("Me cago en toooooo");
 
 };
 

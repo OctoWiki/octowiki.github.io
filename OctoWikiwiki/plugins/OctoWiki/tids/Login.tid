@@ -1,0 +1,14 @@
+title: Login
+
+In order to use the application you have to authorize it to use your github account.
+
+Don't have a token? [[How to get one|How to get a token]]
+
+''Personal Github token:'' <$edit-text tag="input" default="" placeholder=" Github token" tiddler="$:/state/OTW-token"/>
+
+<$button class="tc-btn-big-green" style="width:100%">
+   <$action-sendmessage $message="tm-otw-set-token" />
+   Login
+</$button>
+
+,,[[What are you doing with my token?|F.A.Q: What happens to my Token?]],,
