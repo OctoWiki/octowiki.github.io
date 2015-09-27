@@ -149,6 +149,7 @@ exports.startup = function(){
                 if (!tiddlerFields)
                     return false
             }
+            tiddlerFields["otw-type"]= getTiddlerType(path); //Save the original file type
             tiddlerFields["otw-path"]=  path;
             tiddlerFields["otw-tags"]=  tiddlerFields.tags;
             delete tiddlerFields.tags; //remove tiddler tags to avoid interactions with current wiki
