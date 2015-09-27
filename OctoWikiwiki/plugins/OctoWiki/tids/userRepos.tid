@@ -2,6 +2,7 @@ title: $:/plugins/danielo515/OctoWiki/userRepos
 
 Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tiddler="$:/state/repositories/filter"></$edit-text>
 
+<$set name="thisTiddler" value=<<currentTiddler>> >
 <table>
 <thead class="evenRow"><tr><td>Repository</td><td>Description</td></tr></thead>
 <$list filter="[prefix[$:/repositories/]search{$:/state/repositories/filter}]">
@@ -9,6 +10,8 @@ Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tid
     <td>
         <$button class="tc-btn-invisible tc-tiddlylink">
             <$action-sendmessage $message="tm-otw-load-repository" username={{!!owner-login}} repository={{!!name}}/>
+            <$action-sendmessage $message="tm-close-tiddler" $param=<<thisTiddler>>/>
+
             {{!!name}}
         </$button>
     </td>
@@ -17,3 +20,4 @@ Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tid
 
 </$list>
 </table>
+</$set>
