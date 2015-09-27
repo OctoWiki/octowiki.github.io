@@ -1,0 +1,11 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Buttons/Logout
+tags: $:/tags/PageControls
+
+<$button class="tc-btn-invisible tc-tiddlylink"
+aria-label = {{$:/plugins/danielo515/OctoWiki/language/Buttons/Logout/Caption}}
+tooltip = {{$:/plugins/danielo515/OctoWiki/language/Buttons/Logout/Caption}}>
+   <$action-sendmessage $message="tm-otw-set-token" token="" />
+   <$action-setfield $tiddler="$:/config/PageControlButtons/Visibility/$:/plugins/danielo515/OctoWiki/ui/Buttons/Logout"
+   $field="text" $value="" />
+          Logout
+</$button>

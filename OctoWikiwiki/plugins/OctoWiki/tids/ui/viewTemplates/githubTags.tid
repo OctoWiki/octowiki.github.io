@@ -1,0 +1,3 @@
+title: $:/plugins/danielo515/OctoWiki/ui/ViewTemplate/OTW-tags
+
+<div class="tc-tags-wrapper"><$list filter="[all[current]list[!!otw-tags]sort[title]]" template="$:/core/ui/TagTemplate" storyview="pop"/></div>
