@@ -7,7 +7,8 @@ Don't have a token? [[How to get one|How to get a token]]
 ''Personal Github token:'' <$edit-text tag="input" default="" placeholder=" Github token" tiddler="$:/state/OTW-token"/>
 
 <$button class="tc-btn-big-green" style="width:100%">
-   <$action-sendmessage $message="tm-otw-set-token" />
+   <$action-sendmessage $message="tm-otw-set-token" token={{$:/state/OTW-token}} />
+   {{$:/core/images/github}}
    Login
 </$button>
 
