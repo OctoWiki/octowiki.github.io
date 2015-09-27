@@ -32,7 +32,10 @@ exports.startup = function(){
 
             OTW.Debug = {
                 Active: debugActive === 'yes',
-                Verbose: debugVerbose === 'yes'
+                Verbose: debugVerbose === 'yes',
+                log: function(message){
+                if(this.Active){logger.log(message)}
+            }
             }
         }
 
@@ -53,10 +56,10 @@ exports.startup = function(){
             var storage = localStorage,
                 config = JSON.parse(storage.getItem('OctoConfig')) || { token:undefined},
                 hasToken = function(){
-                    return config.token !== undefined;
+                    return config.token ? true : false;
                 },
                 setToken = function(token){
-                    config.token=token;
+                    config.token=token.trim();
                     saveConfig();
                 },
                 getToken = function(){
@@ -76,11 +79,40 @@ exports.startup = function(){
         }
 
     function setDefaultTiddlers(){
-        var unloggedUser=['OctoWiki','Login'],
+        var unloggedUser=['OctoWiki'],
             loggedUser=['Repositories'],
             tiddlersTitles = OTW.config.hasToken() ? loggedUser : unloggedUser;
 
         $tw.wiki.setText('$:/DefaultTiddlers','text',null,tiddlersTitles.join('\n'));
+    }
+
+    /*-- Force the navigation to the provided list of tiddlers
+         closing all the other tiddlers --*/
+    function setOpenTiddlers(tiddlersTitles){
+        var StoryList = {title:'$:/StoryList', list: tiddlersTitles};
+        $tw.wiki.addTiddler( new $tw.Tiddler(StoryList));
+    }
+
+    function setTiddlerText(title,text){
+        $tw.wiki.setText(title,'text',null,text);
+    }
+
+    function openTiddler(title){
+        var OpenedTiddlers = $tw.wiki.getTiddlerList("$:/StoryList");
+        OpenedTiddlers.push(title);
+        var StoryList = {title:'$:/StoryList',list:OpenedTiddlers};
+        $tw.wiki.addTiddler( new $tw.Tiddler(StoryList));
+    }
+
+    function Login(){
+        OTW.client = newClient();
+        OTW.user = OTW.client.getUser();
+        //Once logged show the logout button
+        setTiddlerText(
+            "$:/state/OctoWiki/IsLogged",
+            'yes');
+        //List the repositories and add them as tiddlers
+        listRepos(addRepos);
     }
 
     //List all the repositories of the currently logged user
@@ -95,20 +127,48 @@ exports.startup = function(){
         }
 
     function getTiddlerType(path){
-        var type = $tw.utils.getFileExtensionInfo(path.substr(-4));
+        var type = $tw.utils.getFileExtensionInfo(getFileExtension(path));
         return type && type.type;
+    }
+
+    function getFileExtension(path){
+        return path.substr(path.lastIndexOf("."))
     }
 
     function loadTiddlerFile(path,repository,reponame,branch){
         branch = branch || 'master';
         logger.log("Fetching file: ",path, " from github");
-        repository.read(branch, path, function(err, data) {
-            var tiddlerFields =$tw.wiki.deserializeTiddlers(getTiddlerType(path),data);
+        function parseGithubTiddler(tiddlerData){
+            var tiddlerFields =$tw.wiki.deserializeTiddlers(getTiddlerType(path),tiddlerData)[0];
+            if (tiddlerFields) {
+            } else {
+                //If the default parser for this tiddler did not work, try to parse it as text/plain
+                OTW.Debug.log("Were unable to parse " + path + ". Trying to import as text/plain");
+                OTW.Debug.log(tiddlerData);
+                tiddlerFields = $tw.Wiki.tiddlerDeserializerModules["text/plain"](tiddlerData, {});
+                if (!tiddlerFields)
+                    return false
+            }
             tiddlerFields["otw-path"]=  path;
-            tiddlerFields["title"]= reponame + '/' + path;
+            tiddlerFields["otw-tags"]=  tiddlerFields.tags;
+            delete tiddlerFields.tags; //remove tiddler tags to avoid interactions with current wiki
+            tiddlerFields["otw-repository"]=  reponame;
             tiddlerFields["otw-alias"]= tiddlerFields.title;
+            tiddlerFields["title"]= reponame + '/' + path;
+            return new $tw.Tiddler(tiddlerFields)
+        }
 
-            $tw.wiki.addTiddler(new $tw.Tiddler(tiddlerFields[0]));
+        repository.read(branch, path, function(err, data) {
+            if(err){
+                logger.log("Error fetching file ",path, err);
+                return
+            }
+            var newTiddler=parseGithubTiddler(data);
+            if(newTiddler){
+                $tw.wiki.addTiddler(newTiddler);
+                openTiddler(newTiddler.fields.title);
+
+            }
         });
     }
 
@@ -136,6 +196,8 @@ exports.startup = function(){
         OTW.utils.addRepos= addRepos;
         OTW.utils.getTiddlerType = getTiddlerType;
         OTW.utils.loadTiddlerFile = loadTiddlerFile;
+        OTW.utils.setOpenTiddlers =setOpenTiddlers;
+        OTW.Login = Login;
         OTW.config = configFactory();
         setDebug();
 
@@ -143,12 +205,9 @@ exports.startup = function(){
 
         OTW.Github = require("$:/plugins/danielo515/OctoWiki/github.js").Github;
 
-    /*If we have a token already, we are ready to load the repositories*/
+    /*If we have a token already, we are ready to login and load the repositories*/
         if( OTW.config.hasToken()){
-            OTW.client = newClient();
-            OTW.user = OTW.client.getUser();
-            //List the repos and add them as tiddlers
-            listRepos(addRepos);
+            Login();
         }else{
             logger.log("There is no Token stored!");
         }
