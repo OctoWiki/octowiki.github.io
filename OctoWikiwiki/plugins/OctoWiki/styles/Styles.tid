@@ -1,6 +1,25 @@
 title: $:/plugins/danielo515/OctoWiki/Styles/octowiki-styles
 tags: $:/tags/Stylesheet
+list-after: $:/themes/tiddlywiki/vanilla/base
 
 .tc-btn-big-green:hover {
-    background-color:#44d845
+    background-color:#44d845;
+}
+
+.otw-round-corner {
+    border-radius: 3px;
+}
+
+.otw-red { font-weight: normal; font-size: 1em; }
+
+.otw-red {
+    background-color: #FF1010;
+}
+
+.otw-red:hover {
+    background-color: #F54C4C;
+}
+
+.tc-tagged-\%24\%3A\%2FOTW\%2FUI .tc-tiddler-title {
+    display: none;
 }
