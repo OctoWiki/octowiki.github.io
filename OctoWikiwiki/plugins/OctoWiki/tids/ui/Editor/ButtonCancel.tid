@@ -1,0 +1,13 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Buttons/Editor/Cancel
+caption: Commit tiddler
+description: Commit a tiddler to Github
+
+<$button class="tc-btn-big-green otw-red"
+tooltip="Cancel edition"
+aria-label="Cancel" >
+<span class="tc-btn-text">Cancel</span>
+<$action-sendmessage $message="tm-close-all-tiddlers"/>
+<$action-navigate $to="$:/plugins/danielo515/OctoWiki/Repository/Files"/>
+<$action-setfield $tiddler="$:/state/OTW/editedTiddler" $field="text" $value=""/>
+
+</$button>

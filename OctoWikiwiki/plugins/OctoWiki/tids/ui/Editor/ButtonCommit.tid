@@ -1,0 +1,10 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Buttons/Editor/Commit
+caption: Commit tiddler
+description: Commit a tiddler to Github
+
+<$button class="tc-btn-big-green otw-round-corner"
+tooltip={{$:/language/Buttons/Save/Hint}}
+aria-label={{$:/language/Buttons/Save/Caption}} >
+<span class="tc-btn-text">Commit</span>
+<$action-sendmessage $message="tm-otw-commit" tiddler=<<editedTiddler>>/>
+</$button>

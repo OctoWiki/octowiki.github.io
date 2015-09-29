@@ -1,0 +1,4 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Editor/Controls
+tags: $:/OTW/Editor
+
+{{$:/plugins/danielo515/OctoWiki/ui/Buttons/Editor/Commit}} {{$:/plugins/danielo515/OctoWiki/ui/Buttons/Editor/Cancel}}

@@ -1,0 +1,13 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Editor/Title
+tags: $:/OTW/Editor
+list-before: $:/plugins/danielo515/OctoWiki/ui/Editor/Subtitle
+
+<div class="otw-title">
+    <div class="tc-titlebar">
+            <$list filter="[all[current]has[otw-alias]]">
+               <h2 class="tc-title">
+                 <$view field="otw-alias"/>
+               </h2>
+            </$list>
+    </div>
+</div>

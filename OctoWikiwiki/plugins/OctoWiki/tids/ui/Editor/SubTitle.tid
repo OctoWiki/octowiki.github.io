@@ -1,0 +1,10 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Editor/Subtitle
+tags: $:/OTW/Editor
+list-after: $:/plugins/danielo515/OctoWiki/ui/Editor/Title
+list-before: $:/plugins/danielo515/OctoWiki/ui/Editor/Body
+
+
+<div class="tc-subtitle">
+    Github title: <$view field="title"/>
+    <$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/ViewTemplate/OTW-tags"/>
+</div>
