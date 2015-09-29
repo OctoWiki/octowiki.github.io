@@ -3,17 +3,4 @@ tags: $:/OTW/Editor
 list-after: $:/plugins/danielo515/OctoWiki/ui/Editor/Subtitle
 list-before: $:/plugins/danielo515/OctoWiki/ui/Editor/Controls
 
-<div class="tc-tiddler-preview">
-<div class="tc-tiddler-preview-preview">
-<$set name="tv-tiddler-preview" value="yes">
-
-<$transclude />
-
-</$set>
-</div>
-
-<div class="tc-tiddler-preview-edit">
-<$edit field="text" class="tc-edit-texteditor" placeholder={{$:/language/EditTemplate/Body/Placeholder}}/>
-
-</div>
-</div>
+<<tabs "[all[tiddlers+shadows]tag[$:/OTW/Editor/Body]]" "$:/plugins/danielo515/OctoWiki/ui/Editor/Edit" "$:/state/OTW/Editor/Tabs" "unibar-tabs">>

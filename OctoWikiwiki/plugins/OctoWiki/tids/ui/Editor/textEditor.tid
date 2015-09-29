@@ -1,0 +1,3 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Editor/Edit/Text
+
+<$edit field="text" class="tc-edit-texteditor unibar-editor" placeholder="" default="" autoHeight="no" />

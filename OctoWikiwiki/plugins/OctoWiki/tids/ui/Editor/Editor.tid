@@ -1,8 +1,10 @@
 title: $:/plugins/danielo515/OctoWiki/ui/Editor
 tags: $:/OTW/UI
 
+<div class="otw-editor">
 <$tiddler tiddler={{$:/state/OTW/editedTiddler}}>
 <$list filter="[all[shadows+tiddlers]tag[$:/OTW/Editor]!has[draft.of]]" variable="listItem">
 <$transclude tiddler=<<listItem>>/>
 </$list>
 </$tiddler>
+</div>

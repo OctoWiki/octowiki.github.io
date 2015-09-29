@@ -2,24 +2,42 @@ title: $:/plugins/danielo515/OctoWiki/Styles/octowiki-styles
 tags: $:/tags/Stylesheet
 list-after: $:/themes/tiddlywiki/vanilla/base
 
-.tc-btn-big-green:hover {
+.tc-tagged-\%24\%3A\%2FOTW\%2FUI .tc-tiddler-title {
+    display: none;
+}
+
+/*----------EDITOR BASICS -----------------*/
+.otw-editor button { background-color: #535557; color: #efefef; font-weight: bold; border: 0; padding: 8px 10px 8px 10px; }
+
+.otw-editor button.tc-tag-label { display: inline-block; padding: 0.16em 0.7em; font-size: 0.9em; font-weight: 300; line-height: 1.2em; color: #FFF; white-space: nowrap; vertical-align: baseline; background-color: #EC6; border-radius: 1em; }
+
+.otw-editor button:hover { background-color: #63676E; }
+
+.otw-editor .tc-tab-buttons button.tc-tab-selected { background: #3D3F40; color: #efefef; border-left: 1px solid #535557; border-top: 1px solid #535557; border-right: 1px solid #535557; }
+
+.otw-editor .tc-tab-divider { border: 1px solid #535557; }
+
+.otw-editor button svg { fill: #efefef; }
+
+
+/*---------------Editor Controls-----------*/
+
+.otw-editor> .tc-btn-big-green:hover {
     background-color:#44d845;
+}
+
+.otw-editor> .tc-btn-big-green {
+    background-color: #34c734;
 }
 
 .otw-round-corner {
     border-radius: 3px;
 }
 
-.otw-red { font-weight: normal; font-size: 1em; }
-
-.otw-red {
+.otw-editor> .otw-red {
     background-color: #FF1010;
 }
 
-.otw-red:hover {
+.otw-editor> .otw-red:hover {
     background-color: #F54C4C;
-}
-
-.tc-tagged-\%24\%3A\%2FOTW\%2FUI .tc-tiddler-title {
-    display: none;
 }

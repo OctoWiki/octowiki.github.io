@@ -1,0 +1,19 @@
+title: $:/plugins/danielo515/OctoWiki/Repository/Files
+tags: $:/OTW/UI
+
+[[Back to repositories list|Repositories]]
+
+<h2 class="tc-title">
+                 <$view field="text" tiddler="$:/state/OTW/Repository/Selected"/>
+</h2>
+
+<$list filter="[all[shadows+tiddlers]prefix{$:/state/OTW/Repository/Selected}]" emptyMessage="""<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Loading"/>""">
+
+;<$button class="tc-btn-invisible tc-tiddlylink">
+    <$action-navigate $to="$:/plugins/danielo515/OctoWiki/ui/Editor"/>
+    <$action-setfield $field="text" $value={{!!title}} $tiddler="$:/state/OTW/editedTiddler"/>
+    <$view field="otw-alias"/>
+</$button>
+:<$view field="title"/>
+</$list>
+

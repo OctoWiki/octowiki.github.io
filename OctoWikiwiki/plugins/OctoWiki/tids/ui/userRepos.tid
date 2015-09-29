@@ -10,8 +10,9 @@ Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tid
     <td>
         <$button class="tc-btn-invisible tc-tiddlylink">
             <$action-sendmessage $message="tm-otw-load-repository" username={{!!owner-login}} repository={{!!name}}/>
-            <$action-sendmessage $message="tm-close-tiddler" $param=<<thisTiddler>>/>
-
+            <$action-sendmessage $message="tm-close-all-tiddlers"/>
+            <$action-setfield $tiddler="$:/state/OTW/Repository/Selected" $field="text" $value={{!!name}}/>
+            <$action-navigate $to="$:/plugins/danielo515/OctoWiki/Repository/Files"/>
             {{!!name}}
         </$button>
     </td>

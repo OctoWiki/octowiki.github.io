@@ -1,0 +1,5 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Editor/Preview
+tags: $:/OTW/Editor/Body
+caption: Preview
+
+<$transclude tiddler="$:/core/ui/ViewTemplate" />
