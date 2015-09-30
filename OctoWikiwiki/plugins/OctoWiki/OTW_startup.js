@@ -44,14 +44,6 @@ exports.startup = function(){
             return configValue.trim();
         }
 
-        function newClient(){
-            return new OTW.Github
-            ({
-                token: OTW.config.getToken()
-                ,auth:'oauth'
-            });
-        }
-
         function configFactory(){
             var storage = localStorage,
                 config = JSON.parse(storage.getItem('OctoConfig')) || { token:undefined},
@@ -78,30 +70,16 @@ exports.startup = function(){
 
         }
 
-    function setDefaultTiddlers(){
-        var unloggedUser=['OctoWiki'],
-            loggedUser=['Repositories'],
-            tiddlersTitles = OTW.config.hasToken() ? loggedUser : unloggedUser;
 
-        $tw.wiki.setText('$:/DefaultTiddlers','text',null,tiddlersTitles.join('\n'));
-    }
 
-    /*-- Force the navigation to the provided list of tiddlers
-         closing all the other tiddlers --*/
-    function setOpenTiddlers(tiddlersTitles){
-        var StoryList = {title:'$:/StoryList', list: tiddlersTitles};
-        $tw.wiki.addTiddler( new $tw.Tiddler(StoryList));
-    }
-
-    function setTiddlerText(title,text){
-        $tw.wiki.setText(title,'text',null,text);
-    }
-
-    function openTiddler(title){
-        var OpenedTiddlers = $tw.wiki.getTiddlerList("$:/StoryList");
-        OpenedTiddlers.push(title);
-        var StoryList = {title:'$:/StoryList',list:OpenedTiddlers};
-        $tw.wiki.addTiddler( new $tw.Tiddler(StoryList));
+    /*------------Github Stuff ----------------*/
+    /*==========================================*/
+    function newClient(){
+        return new OTW.Github
+        ({
+            token: OTW.config.getToken()
+            ,auth:'oauth'
+        });
     }
 
     function Login(){
@@ -126,14 +104,6 @@ exports.startup = function(){
             }
         }
 
-    function getTiddlerType(path){
-        var type = $tw.utils.getFileExtensionInfo(getFileExtension(path));
-        return type && type.type;
-    }
-
-    function getFileExtension(path){
-        return path.substr(path.lastIndexOf("."))
-    }
 
     function loadTiddlerFile(path,repository,reponame,branch){
         branch = branch || 'master';
@@ -149,12 +119,11 @@ exports.startup = function(){
                 if (!tiddlerFields)
                     return false
             }
-            tiddlerFields["otw-type"]= getTiddlerType(path); //Save the original file type
             tiddlerFields["otw-path"]=  path;
             tiddlerFields["otw-tags"]=  tiddlerFields.tags;
             delete tiddlerFields.tags; //remove tiddler tags to avoid interactions with current wiki
             tiddlerFields["otw-repository"]=  reponame;
-            tiddlerFields["otw-alias"]= tiddlerFields.title;
+            tiddlerFields["otw-title"]= tiddlerFields.title;
             tiddlerFields["title"]= reponame + '/' + path;
             return new $tw.Tiddler(tiddlerFields)
         }
@@ -167,7 +136,7 @@ exports.startup = function(){
             var newTiddler=parseGithubTiddler(data);
             if(newTiddler){
                 $tw.wiki.addTiddler(newTiddler);
-                openTiddler(newTiddler.fields.title);
+                // openTiddler(newTiddler.fields.title);
 
             }
         });
@@ -175,19 +144,114 @@ exports.startup = function(){
 
     //Receives a repository object and returns a tiddler containing all the
     // repository information in tiddler's fields
-        function repoToTiddler(repo){
-            repo.title = "$:/repositories/" + repo.name;
-            $tw.utils.each(repo.owner,function(value,name){
-                repo['owner-'+name]=value;
-            });
-            return new $tw.Tiddler( repo );
+    function repoToTiddler(repo){
+        repo.title = "$:/repositories/" + repo.name;
+        $tw.utils.each(repo.owner,function(value,name){
+            repo['owner-'+name]=value;
+        });
+        return new $tw.Tiddler( repo );
+    }
+
+    function addRepos(repos){
+        $tw.utils.each(repos,function(repo){
+            $tw.wiki.addTiddler(repoToTiddler(repo));
+        });
+    }
+
+    /*---------------- Tiddlers stuff -------------------*/
+    //====================================================
+
+    function setDefaultTiddlers(){
+        var unloggedUser=['$:/plugins/danielo515/OctoWiki','OctoWiki'],
+            loggedUser=['$:/plugins/danielo515/OctoWiki','Repositories'],
+            tiddlersTitles = OTW.config.hasToken() ? loggedUser : unloggedUser;
+
+        $tw.wiki.setText('$:/DefaultTiddlers','text',null,tiddlersTitles.join('\n'));
+    }
+
+    /*-- Force the navigation to the provided list of tiddlers
+     closing all the other tiddlers --*/
+    function setOpenTiddlers(tiddlersTitles){
+        var StoryList = {title:'$:/StoryList', list: tiddlersTitles};
+        $tw.wiki.addTiddler( new $tw.Tiddler(StoryList));
+    }
+
+    function setTiddlerText(title,text){
+        $tw.wiki.setText(title,'text',null,text);
+    }
+
+    function openTiddler(title){
+        var OpenedTiddlers = $tw.wiki.getTiddlerList("$:/StoryList");
+        OpenedTiddlers.push(title);
+        var StoryList = {title:'$:/StoryList',list:OpenedTiddlers};
+        $tw.wiki.addTiddler( new $tw.Tiddler(StoryList));
+    }
+
+    function getTiddlerType(path){
+        var type = $tw.utils.getFileExtensionInfo(getFileExtension(path));
+        return type && type.type;
+    }
+
+    function getFileExtension(path){
+        return path.substr(path.lastIndexOf("."))
+    }
+
+    function isMetadata(fieldName){
+        var metadataFields = {
+            'otw-path':true,
+            'otw-repository':true
         }
 
-        function addRepos(repos){
-            $tw.utils.each(repos,function(repo){
-                $tw.wiki.addTiddler(repoToTiddler(repo));
+        return metadataFields[fieldName];
+    }
+
+    function getTiddler(title){ //A wrapper around the tiddler object
+        var tiddler = $tw.wiki.getTiddler(title),
+            fields = tiddler && tiddler.fields || {},
+            renderTemplates = { '.tid' : '$:/core/templates/tid-tiddler'};
+
+        function getActualFields(){
+            var actualFields = {};
+            $tw.utils.each(fields,function(value,field){
+                if(isMetadata(field)) return; //We don't want metadata fields in the original file
+
+                var fieldName = field.replace('otw-','');
+                //Checking the original field name, instead of the modified makes us sure that we are not
+                // going to override a field converted from a metadata field like otw-title -> tittle
+                if( !actualFields.hasOwnProperty(field) ){
+                    actualFields[fieldName] = value
+                }
             });
+
+            return actualFields;
         }
+
+        function getPath(){
+            return fields['otw-path'];
+        }
+
+        function getRenderTemplate(){
+            /* Render as a tid file or just as a plain text file*/
+            return renderTemplates[getFileExtension(fields['otw-path'])] || '$:/core/templates/plain-text-tiddler';
+        }
+
+        //returns tex representing a tiddler as its original file
+        function renderTiddler(){
+            var githubFields = getActualFields();
+            $tw.wiki.addTiddler(new $tw.Tiddler(githubFields)); //add the tiddler with the fields it should have to be able to render it
+            var content = $tw.wiki.renderTiddler("text/plain",getRenderTemplate(),{variables: {currentTiddler: githubFields.title}});
+            $tw.wiki.deleteTiddler(githubFields.title);
+            return content;
+        }
+
+        return {
+            getActualFields: getActualFields,
+            getRenderTemplate: getRenderTemplate,
+            render: renderTiddler,
+            getPath: getPath
+        }
+    }
+
 
         /* --- OTW namespace creation and basic initialization---*/
         var OTW = { utils: {}};
@@ -198,6 +262,7 @@ exports.startup = function(){
         OTW.utils.getTiddlerType = getTiddlerType;
         OTW.utils.loadTiddlerFile = loadTiddlerFile;
         OTW.utils.setOpenTiddlers =setOpenTiddlers;
+        OTW.utils.getGithubTiddler = getTiddler;
         OTW.Login = Login;
         OTW.config = configFactory();
         setDebug();
