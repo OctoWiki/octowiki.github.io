@@ -1,0 +1,9 @@
+title: F.A.Q. Can I have my own OctoWiki or import it into my personal wiki ?
+tags: $:/OTW/FAQ
+
+The answer to the first question is yes. You can clone the repository, fork it, download the sources or just
+download the OctoWiki `.html` file. However your personal copies will only work with the `personal token` authorization mechanism.
+
+Regarding the second question, "//can I import OctoWiki as a plugin to my personal wiki?//" the answer is ''NO''. <br>
+OctoWiki is designed as an edition and it ''is not intended to persist it's changes in the wiki it lives in''.
+OctoWiki relies on some heavy intrusive customizations, and it will probably not play well wit most wikis, which are, at the end, very personal files.

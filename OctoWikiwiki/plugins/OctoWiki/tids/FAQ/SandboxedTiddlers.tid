@@ -1,0 +1,12 @@
+title: F.A.Q. Why do my tiddlers behave/look different?
+tags: $:/OTW/FAQ
+
+Tiddlers imported from repositories are sandboxed.
+To avoid unwanted interactions with OctoWiki some fields (such as tags and title) are prefixed with `otw`.
+This mechanisms prevents problems like overriding tiddlers, changing colors, adding unnecessary UI elements and so on.
+
+This is why some tiddlers may look and hor behave different.
+The effect depends on how much your tiddler depend on other tiddlers such as ''javascript macros'', custom CSS stylesheets tiddlers
+and plugins. Tiddlers with styles self contained should work fine as well as ''regular tiddlywiki macros''.
+
+Sandboxing ''may be more restrictive'' in future releases.

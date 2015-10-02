@@ -1,0 +1,12 @@
+title: F.A.Q Where/how do you store my personal access token?
+tags: $:/OTW/FAQ
+
+The answer is ''locally inside your browser''.
+
+One of the main features of TiddlyWiki is that you totally control your data.
+We want to stay faithful to that principle and we apply it to your `personal accesss token`.
+It is safe inside your browser's `localStorage`, and it will never leave yor browser, you can inspect the network console if you want.
+We really think that your token should never be managed by third parties. At the end it is personal!!
+
+In fact, OctoWiki is a single page web application, ''without any backend or server side'', so even if we want to steal your
+token we don't have a place to store it!
