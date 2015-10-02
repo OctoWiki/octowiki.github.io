@@ -1,8 +1,7 @@
 {
 	"plugins": [
           "tiddlywiki/tiddlyweb",
-          "tiddlywiki/codemirror",
-          "tiddlywiki/highlight"
+          "tiddlywiki/codemirror"
 	],
 	"themes": [
 		"tiddlywiki/vanilla",

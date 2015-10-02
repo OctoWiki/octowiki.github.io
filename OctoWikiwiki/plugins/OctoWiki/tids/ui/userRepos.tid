@@ -5,7 +5,7 @@ Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tid
 <$set name="thisTiddler" value=<<currentTiddler>> >
 <table>
 <thead class="evenRow"><tr><td>Repository</td><td>Description</td></tr></thead>
-<$list filter="[prefix[$:/repositories/]search{$:/state/repositories/filter}]">
+<$list filter="[prefix[$:/repositories/]search{$:/state/repositories/filter}sort[title]]">
 <tr>
     <td>
         <$button class="tc-btn-invisible tc-tiddlylink">

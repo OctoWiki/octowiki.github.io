@@ -24,15 +24,21 @@ module-type: widget
     FieldManglerCustom.prototype = new FieldManglerWidget();
 
     FieldManglerCustom.prototype.handleRemoveTagEvent = function(event) {
-	var tiddler = this.wiki.getTiddler(this.mangleTitle);
-	if(tiddler && tiddler.fields.tags) {
-		var p = tiddler.fields.tags.indexOf(event.param);
+	var tiddler = this.wiki.getTiddler(this.mangleTitle),field;
+		 //we want to be able to define the destination field!
+	if(tiddler && tiddler.fields[field = event.paramObject.field || 'tags']) {
+		if(field === 'tags' ){ // if we are editing the tags, call the original widget
+			FieldManglerWidget.prototype.handleRemoveTagEvent.call(this,event);
+			return;
+		}
+		var currentValue = $tw.utils.parseStringArray(tiddler.fields[field]);
+		var p = currentValue.indexOf(event.param);
 		if(p !== -1) {
 			var modification = this.wiki.getModificationFields();
-			modification.tags = (tiddler.fields.tags || []).slice(0);
-			modification.tags.splice(p,1);
-			if(modification.tags.length === 0) {
-				modification.tags = undefined;
+			modification[field] = currentValue.slice(0); // I have to slice the array because the original one is sealed
+			modification[field].splice(p,1);
+			if(modification[field].length === 0) {
+				modification[field] = undefined;
 			}
 		this.wiki.addTiddler(new $tw.Tiddler(tiddler,modification));
 		}

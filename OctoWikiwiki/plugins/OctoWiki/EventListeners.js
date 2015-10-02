@@ -19,7 +19,8 @@ exports.platforms = ["browser"];
 exports.synchronous = true;
 
 exports.startup = function(){
-    var logger = new $tw.utils.Logger("OctoWiki");
+    var logger = new $tw.utils.Logger("OctoWiki"),
+        OTW = $tw.OTW;
     function isTiddlerFile(path){
         return $tw.OTW.utils.getTiddlerType(path)
     }
@@ -36,15 +37,31 @@ exports.startup = function(){
             repository = client.getRepo(username, repoName),
             branch='master';
 
+        OTW.repository.setSelected(repository,repoName);
+
         logger.log("Loading tiddler files from branch ",branch," on repository ",repoName);
         repository.getTree(branch+'?recursive=true', function(err, tree) {
+            OTW.Debug.log("Repository tree: ",tree);
             $tw.utils.each(tree,function(item){
+                if(item.type === 'tree' ){
+                    OTW.registerFolder(item,repoName);
+                }
                 if(isTiddlerFile(item.path)){
                     $tw.OTW.utils.loadTiddlerFile(item.path,repository,repoName,branch);
                 }
             });
         });
 
+    });
+
+    $tw.rootWidget.addEventListener("tm-otw-commit-tiddler",function(event){
+        var title = event.paramObject.tiddler,
+            message = event.paramObject.message,
+            tiddler = OTW.utils.getGithubTiddler(title);
+
+        OTW.Debug.log("Commiting tiddler ", title);
+
+        OTW.gitHub.commit(tiddler.getRepository(),tiddler.getPath(),tiddler.render(),message);
     });
 
     $tw.rootWidget.addEventListener("tm-otw-set-token",function(event) {

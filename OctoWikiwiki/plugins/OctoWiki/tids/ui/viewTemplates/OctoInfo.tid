@@ -1,8 +1,8 @@
 title: $:/plugins/danielo515/OctoWiki/ui/ViewTemplate/subtitle
-tags: $:/tags/ViewTemplate
+tags: $_:/tags/ViewTemplate $:/OTW/Editor
 list-before: $:/core/ui/ViewTemplate/subtitle
 
-<$list filter="[all[current]has[otw-alias]]">
+<$list filter="[all[current]has[otw-title]]">
     <div class="tc-subtitle">
     Github title: <$view field="title"/>
     <$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/ViewTemplate/OTW-tags"/>

@@ -4,9 +4,9 @@ list-before: $:/plugins/danielo515/OctoWiki/ui/Editor/Subtitle
 
 <div class="otw-title">
     <div class="tc-titlebar">
-            <$list filter="[all[current]has[otw-alias]]">
+            <$list filter="[all[current]has[otw-title]]">
                <h2 class="tc-title">
-                 <$view field="otw-alias"/>
+                 <$view field="otw-title"/>
                </h2>
             </$list>
     </div>

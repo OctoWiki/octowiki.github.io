@@ -1,6 +1,6 @@
 title: $:/plugins/danielo515/OctoWiki/ui/Toolbar/Commit
 tags: $:/tags/EditToolbar
 
-<$list filter="[all[current]has[otw-alias]]">
+<$list filter="[all[current]has[otw-title]]">
           <$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Buttons/Commit"/>
 </$list>

@@ -30,11 +30,16 @@ exports.startup = function(){
             var debugActive = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "Debug/Active");
             var debugVerbose = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "Debug/Verbose");
 
+            var logger = new $tw.utils.Logger("OTW-Debug");
+
             OTW.Debug = {
                 Active: debugActive === 'yes',
                 Verbose: debugVerbose === 'yes',
-                log: function(message){
-                if(this.Active){logger.log(message)}
+                log: function( /*..message..*/ ){
+                if(this.Active){
+                    /*if( !verboseOnly || ( verboseOnly && this.verbose) ){*/
+                        logger.log.apply(logger,arguments)
+                }
             }
             }
         }
@@ -61,6 +66,7 @@ exports.startup = function(){
                     localStorage.setItem('OctoConfig',JSON.stringify(config));
                 };
 
+
             return {
                 hasToken: hasToken,
                 setToken: setToken,
@@ -69,6 +75,27 @@ exports.startup = function(){
             };
 
         }
+
+
+    var repository = function(){
+        var currentRepository, selected,
+            setSelected = function(repo,name){
+                currentRepository = repo;
+                selected = name;
+            },
+            isSelected = function (name) {
+            return selected === name;
+            },
+            getSelected = function(){
+            return currentRepository;
+        }
+
+        return {
+            setSelected: setSelected,
+            isSelected: isSelected,
+            getSelected: getSelected
+        }
+    };
 
 
 
@@ -104,6 +131,11 @@ exports.startup = function(){
             }
         }
 
+    function commitFile(repository,path,content,message){
+        repository.write('master', path, content, message, function(err) {
+            logger.log(err);
+        });
+    }
 
     function loadTiddlerFile(path,repository,reponame,branch){
         branch = branch || 'master';
@@ -125,6 +157,7 @@ exports.startup = function(){
             tiddlerFields["otw-repository"]=  reponame;
             tiddlerFields["otw-title"]= tiddlerFields.title;
             tiddlerFields["title"]= reponame + '/' + path;
+            tiddlerFields["otw-parent"]= getParentFolder(tiddlerFields.title);
             return new $tw.Tiddler(tiddlerFields)
         }
 
@@ -136,8 +169,6 @@ exports.startup = function(){
             var newTiddler=parseGithubTiddler(data);
             if(newTiddler){
                 $tw.wiki.addTiddler(newTiddler);
-                // openTiddler(newTiddler.fields.title);
-
             }
         });
     }
@@ -230,6 +261,20 @@ exports.startup = function(){
             return fields['otw-path'];
         }
 
+        function getOwner(){
+            var repoTiddler = $tw.wiki.getTiddler('$:/repositories/'+ fields.title);
+
+            return repoTiddler && repoTiddler.fields['owner-login'];
+        }
+
+        function getRepository(){
+            if( OTW.repository.isSelected(fields['otw-repository']) )
+            return OTW.repository.getSelected();
+            else {
+                return OTW.client.getRepo(getOwner(), fields['otw-repository'])
+            }
+        }
+
         function getRenderTemplate(){
             /* Render as a tid file or just as a plain text file*/
             return renderTemplates[getFileExtension(fields['otw-path'])] || '$:/core/templates/plain-text-tiddler';
@@ -248,13 +293,33 @@ exports.startup = function(){
             getActualFields: getActualFields,
             getRenderTemplate: getRenderTemplate,
             render: renderTiddler,
-            getPath: getPath
+            getPath: getPath,
+            getOwner: getOwner,
+            getRepository: getRepository
         }
     }
 
+    /*---------------- Other stuff -------------------*/
+    //====================================================
+
+    function registerFolder(folder,repoName){
+        var tiddler = {
+            'otw-type':'folder',
+            'otw-path':folder.path
+        };
+        tiddler.title = [ repoName, folder.path].join('/');
+        tiddler['otw-parent'] = getParentFolder(tiddler.title);
+
+        $tw.wiki.addTiddler(tiddler);
+    }
+
+    function getParentFolder(path){
+        return path.substr(0,path.lastIndexOf('/'))
+    }
 
         /* --- OTW namespace creation and basic initialization---*/
-        var OTW = { utils: {}};
+    //===============================================================================0
+        var OTW = { utils: {}, gitHub:{} };
         OTW.utils.getConfig = getConfig;
         OTW.utils.newClient = newClient;
         OTW.utils.listRepos = listRepos;
@@ -262,9 +327,13 @@ exports.startup = function(){
         OTW.utils.getTiddlerType = getTiddlerType;
         OTW.utils.loadTiddlerFile = loadTiddlerFile;
         OTW.utils.setOpenTiddlers =setOpenTiddlers;
+        OTW.utils.getParentFolder = getParentFolder;
         OTW.utils.getGithubTiddler = getTiddler;
+        OTW.gitHub.commit = commitFile;
+        OTW.registerFolder = registerFolder;
         OTW.Login = Login;
         OTW.config = configFactory();
+        OTW.repository = repository();
         setDebug();
 
         /* --- Here is where startup stuff really starts ---*/

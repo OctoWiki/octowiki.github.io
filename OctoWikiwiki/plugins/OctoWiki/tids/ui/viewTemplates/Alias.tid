@@ -15,7 +15,7 @@ $:/config/ViewToolbarButtons/Visibility/$(listItem)$
 <!-- Original tiddlywiki tittle stuff -->
 <$set name="tv-wikilinks" value={{$:/config/Tiddlers/TitleLinks}}>
 <$link>
-<$list filter="[all[current]!has[otw-alias]]">
+<$list filter="[all[current]!has[otw-title]]">
 <$set name="foregroundColor" value={{!!color}}>
 <span class="tc-tiddler-title-icon" style=<<title-styles>>>
 <$transclude tiddler={{!!icon}}/>
@@ -35,9 +35,9 @@ $:/config/ViewToolbarButtons/Visibility/$(listItem)$
 </$link>
 </$set>
 <!-- END Original tiddlywiki tittle stuff -->
-        <$list filter="[all[current]has[otw-alias]]">
+        <$list filter="[all[current]has[otw-title]]">
            <h2 class="tc-title">
-             <$view field="otw-alias"/>
+             <$view field="otw-title"/>
            </h2>
         </$list>
     </div>
