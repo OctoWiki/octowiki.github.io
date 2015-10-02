@@ -1,19 +1,42 @@
 title: $:/plugins/danielo515/OctoWiki/Repository/Files
 tags: $:/OTW/UI
 
+\define listChildren(parent)
+ <$list filter="[prefix{$:/state/OTW/Repository/Selected}otw-parent[$parent$]!sort[]]">
+    <ul><li><$macrocall $name="listFile"/><$macrocall $name="listFolder"/></li>
+        <$macrocall $name="listChildren" parent=<<currentTiddler>> />
+      </ul>
+    </$list>
+\end
+\define listRoot(repo)
+<$list filter="[all[shadows+tiddlers]otw-parent[$repo$]!sort[]]" emptyMessage="""<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Loading"/>""">
+    <ul><li><$macrocall $name="listFile"/><$macrocall $name="listFolder"/></li>
+        <$macrocall $name="listChildren" parent=<<currentTiddler>> />
+      </ul>
+    </$list>
+\end
+
+\define listFile()
+<$list filter="[all[current]!otw-type[folder]limit[1]]"><dl><dt><$button class="tc-btn-invisible tc-tiddlylink">
+    <$action-navigate $to="$:/plugins/danielo515/OctoWiki/ui/Editor"/>
+    <$action-setfield $field="text" $value={{!!title}} $tiddler="$:/state/OTW/editedTiddler"/>
+    <$view field="title"/>
+</$button></dt>
+<dd><$view field="otw-title"/></dd>
+</dl>
+</$list>
+\end
+\define listFolder()
+<$list filter="[all[current]otw-type[folder]limit[1]]">
+
+!!<$view field="title"/>
+</$list>
+\end
+
 [[Back to repositories list|Repositories]]
 
 <h2 class="tc-title">
                  <$view field="text" tiddler="$:/state/OTW/Repository/Selected"/>
 </h2>
 
-<$list filter="[all[shadows+tiddlers]prefix{$:/state/OTW/Repository/Selected}]" emptyMessage="""<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Loading"/>""">
-
-;<$button class="tc-btn-invisible tc-tiddlylink">
-    <$action-navigate $to="$:/plugins/danielo515/OctoWiki/ui/Editor"/>
-    <$action-setfield $field="text" $value={{!!title}} $tiddler="$:/state/OTW/editedTiddler"/>
-    <$view field="otw-alias"/>
-</$button>
-:<$view field="title"/>
-</$list>
-
+<$macrocall $name="listRoot" repo={{$:/state/OTW/Repository/Selected}} />
