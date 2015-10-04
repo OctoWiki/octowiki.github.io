@@ -28,6 +28,9 @@ exports.startup = function(){
         var logger = new $tw.utils.Logger("OTW"),
             OTW = { utils: {}, gitHub:{} }; // Our main scope!
             OTW.sandbox = require('$:/plugins/danielo515/OctoWiki/sandbox').sandbox;
+            OTW.sandbox.tiddlers = []; //Store for the tiddlers to sandbox
+            OTW.sandbox.folders = {}; //Hasmap of folders
+            OTW.sandbox.files = {};
 
         function setDebug(){
             var debugActive = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "Debug/Active");
@@ -81,22 +84,108 @@ exports.startup = function(){
 
 
     var repository = function(){
-        var currentRepository, selected,
+        var currentRepository, repoName,
+            itemsCount,itemsToLoad,loadedItems,
             setSelected = function(repo,name){
+                reset();
                 currentRepository = repo;
-                selected = name;
+                repoName = name;
             },
             isSelected = function (name) {
-            return selected === name;
+            return repoName === name;
             },
             getSelected = function(){
             return currentRepository;
+        };
+
+        function reset(){
+            currentRepository = null; repoName = null;
+            itemsCount = 0, itemsToLoad=0,loadedItems=0;
+        }
+
+        function list(branch,callback){
+            currentRepository.getTree(branch +'?recursive=true',function(err,tree){
+                if(err){
+                    OTW.Debug.log('Error listing repository! ',err);
+                    console.log('The repository was nos listed. Aborting');
+                    return
+                }
+                else
+                {
+                    OTW.Debug.log("Repository tree: ",tree);
+                    itemsCount = tree.length;
+                    callback(tree);
+                }
+            });
+        }
+
+        function loadFile(path,branch,callback){
+            branch = branch || 'master';
+            OTW.Debug.log("Fetching file: ",path, " from github");
+            currentRepository.read(branch, path, function(err, data) {
+                itemsToLoad--; // one item less to process
+                if(err){
+                    logger.log("Error fetching file ",path, err);
+                    return
+                }
+                loadedItems++; //register success
+                callback(data);
+            });
+        }
+
+        function load(branch,callback){
+            OTW.Debug.log("Loading tiddler files from branch ",branch," on repository ",repoName);
+            //We need to know when we are done loading because this is asynchronous.
+            // so we need to know how many left to load
+
+            registerFolder({path:undefined},repoName); //Register the root folder of the repository
+            list(branch, function(tree) {
+                itemsToLoad = itemsCount;
+                $tw.utils.each(tree,function(item){
+                    OTW.Debug.log("Loading item ",item, " - Count: ",itemsCount,". ",itemsToLoad, " items left");
+                    if(item.type === 'tree' ){ //if it is a dir just register it
+                        itemsToLoad--; loadedItems++;
+                        OTW.registerFolder(item,repoName);
+                        return;
+                    }
+                        if(isTiddlerFile(item.path)){
+                            loadFile(item.path,branch,
+                                function(data){
+                                    registerFile(item,repoName);
+                                    loadTiddlerFromGithub(item,data);});
+                        } else{
+                            itemsToLoad--;loadedItems++; //We are not going to load this file anyway
+                        }
+                });
+                executeCallback(callback);
+            });
+        }
+
+        function executeCallback(callback,reportProgress){
+            if(!callback) return
+            if( itemsToLoad > 0){
+                setTimeout(
+                    executeCallback.bind(this,callback,reportProgress)
+                    ,100
+                );
+                reportProgress && reportProgress();
+            } else{
+                callback(succcessRate());
+            }
+        }
+
+        function succcessRate(){
+            var  rate=(( itemsCount - loadedItems ) * 100) / itemsCount;
+            return ["Loaded items",loadedItems,"|Items to load",itemsToLoad, "|Success rate ",(100 - rate )+"%"].join(' | ');
         }
 
         return {
             setSelected: setSelected,
             isSelected: isSelected,
-            getSelected: getSelected
+            getSelected: getSelected,
+            list: list,
+            successRate:succcessRate,
+            load:load
         }
     };
 
@@ -123,6 +212,8 @@ exports.startup = function(){
         listRepos(addRepos);
     }
 
+    function Logout(){}
+
     //List all the repositories of the currently logged user
     function listRepos(callback){
             if( OTW.user !== undefined){
@@ -140,40 +231,19 @@ exports.startup = function(){
         });
     }
 
-    function loadTiddlerFile(path,repository,reponame,branch){
-        branch = branch || 'master';
-        logger.log("Fetching file: ",path, " from github");
-        function parseGithubTiddler(tiddlerData){
-            var tiddlerFields =$tw.wiki.deserializeTiddlers(getTiddlerType(path),tiddlerData)[0];
-            if (tiddlerFields) {
-            } else {
-                //If the default parser for this tiddler did not work, try to parse it as text/plain
-                OTW.Debug.log("Were unable to parse " + path + ". Trying to import as text/plain");
-                OTW.Debug.log(tiddlerData);
-                tiddlerFields = $tw.Wiki.tiddlerDeserializerModules["text/plain"](tiddlerData, {});
-                if (!tiddlerFields)
-                    return false
-            }
-            tiddlerFields["otw-path"]=  path;
-            tiddlerFields["otw-tags"]=  tiddlerFields.tags;
-            delete tiddlerFields.tags; //remove tiddler tags to avoid interactions with current wiki
-            tiddlerFields["otw-repository"]=  reponame;
-            tiddlerFields["otw-title"]= tiddlerFields.title;
-            tiddlerFields["title"]= reponame + '/' + path;
-            tiddlerFields["otw-parent"]= getParentFolder(tiddlerFields.title);
-            return new $tw.Tiddler(tiddlerFields)
+    function loadTiddlerFromGithub(metadata,tiddlerData){
+        var tiddlerFields =$tw.wiki.deserializeTiddlers(getTiddlerType(metadata.path),tiddlerData)[0];
+        if (!tiddlerFields) {
+            //If the default parser for this tiddler did not work, try to parse it as text/plain
+            OTW.Debug.log("Were unable to parse " + path + ". Trying to import as text/plain");
+            OTW.Debug.log(tiddlerData);
+            tiddlerFields = $tw.Wiki.tiddlerDeserializerModules["text/plain"](tiddlerData, {});
+            if (!tiddlerFields)
+                return false
         }
 
-        repository.read(branch, path, function(err, data) {
-            if(err){
-                logger.log("Error fetching file ",path, err);
-                return
-            }
-            var newTiddler=parseGithubTiddler(data);
-            if(newTiddler){
-                $tw.wiki.addTiddler(newTiddler);
-            }
-        });
+        OTW.sandbox.tiddlers.push(tiddlerFields);
+
     }
 
     //Receives a repository object and returns a tiddler containing all the
@@ -234,7 +304,7 @@ exports.startup = function(){
         var metadataFields = {
             'otw-path':true,
             'otw-repository':true
-        }
+        };
 
         return metadataFields[fieldName];
     }
@@ -305,15 +375,37 @@ exports.startup = function(){
     /*---------------- Other stuff -------------------*/
     //====================================================
 
+    function isTiddlerFile(path){
+        return $tw.OTW.utils.getTiddlerType(path)
+    }
+
     function registerFolder(folder,repoName){
+        var folders = OTW.sandbox.folders;
         var tiddler = {
             'otw-type':'folder',
-            'otw-path':folder.path
+            'otw-path':folder.path,
+            'list': [] //list of child files
         };
-        tiddler.title = [ repoName, folder.path].join('/');
+        //the root folder is the repo name
+        tiddler.title = folder.path ? [ repoName, folder.path].join('/') : repoName;
         tiddler['otw-parent'] = getParentFolder(tiddler.title);
 
+        folders[tiddler.title]=tiddler; //Register the folder
         $tw.wiki.addTiddler(tiddler);
+    }
+
+    function registerFile(metadata,repoName){
+        var tiddlerFiles=OTW.sandbox.files,
+            tiddlerFields = $tw.utils.extend({},metadata);
+        tiddlerFields.title = [repoName,metadata.path].join('/');
+
+        var parent = OTW.sandbox.folders[getParentFolder(tiddlerFields.title)];
+
+        parent.list = parent.list.slice(0); //ugly workaround becaushe chrome refuses to work as EcMaScript describes
+        parent.list.push(tiddlerFields.title);
+
+        tiddlerFiles[tiddlerFields.title] = tiddlerFields;
+        $tw.wiki.addTiddlers([tiddlerFields,parent]); // refresh the tiddler store with the new data
     }
 
     function getParentFolder(path){
@@ -327,8 +419,9 @@ exports.startup = function(){
         OTW.utils.newClient = newClient;
         OTW.utils.listRepos = listRepos;
         OTW.utils.addRepos= addRepos;
+        OTW.isTiddlerFile = isTiddlerFile;
         OTW.utils.getTiddlerType = getTiddlerType;
-        OTW.utils.loadTiddlerFile = loadTiddlerFile;
+        OTW.utils.loadTiddlerFile = loadTiddlerFromGithub;
         OTW.utils.setOpenTiddlers =setOpenTiddlers;
         OTW.utils.getParentFolder = getParentFolder;
         OTW.utils.getGithubTiddler = getTiddler;

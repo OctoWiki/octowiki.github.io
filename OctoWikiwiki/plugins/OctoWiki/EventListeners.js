@@ -39,18 +39,11 @@ exports.startup = function(){
 
         OTW.repository.setSelected(repository,repoName);
 
-        logger.log("Loading tiddler files from branch ",branch," on repository ",repoName);
-        repository.getTree(branch+'?recursive=true', function(err, tree) {
-            OTW.Debug.log("Repository tree: ",tree);
-            $tw.utils.each(tree,function(item){
-                if(item.type === 'tree' ){
-                    OTW.registerFolder(item,repoName);
-                }
-                if(isTiddlerFile(item.path)){
-                    $tw.OTW.utils.loadTiddlerFile(item.path,repository,repoName,branch);
-                }
+        OTW.repository.load(branch,
+            function(rate){
+                logger.log("Repository loaded!! ",rate);
+                OTW.$ = OTW.sandbox.boot(); // Boot and save the sandboxed wiki
             });
-        });
 
     });
 

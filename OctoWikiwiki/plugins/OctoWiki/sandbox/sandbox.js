@@ -14,7 +14,14 @@ Creates a fully operational sandboxed wiki
     var sandbox = {};
 
     sandbox.boot = function (preloadTiddlers) {
-        var $$tw = _bootprefix( {'preloadTiddlers':preloadTiddlers || []} ), //create the barebones $tw object
+        preloadTiddlers  = preloadTiddlers || [];
+        if(this.tiddlers) {
+            preloadTiddlers = preloadTiddlers ? this.tiddlers.concat(preloadTiddlers) : preloadTiddlers;
+        }
+
+        console.log("Booting with the following preloaded tiddlers: ",preloadTiddlers);
+
+        var $$tw = _bootprefix( {'preloadTiddlers':preloadTiddlers} ), //create the barebones $tw object
             actualDefine = $$tw.modules.define; //save the define method that we are going to hijack
 
         // Here is where the sandboxing magic occurs. We have to hijack the define method to make it behave different.
