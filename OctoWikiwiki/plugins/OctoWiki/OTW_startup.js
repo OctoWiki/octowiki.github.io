@@ -162,7 +162,7 @@ exports.startup = function(){
         }
 
         function executeCallback(callback,reportProgress){
-            if(!callback) return
+            if(!callback) return;
             if( itemsToLoad > 0){
                 setTimeout(
                     executeCallback.bind(this,callback,reportProgress)
@@ -176,7 +176,7 @@ exports.startup = function(){
 
         function succcessRate(){
             var  rate=(( itemsCount - loadedItems ) * 100) / itemsCount;
-            return ["Loaded items",loadedItems,"|Items to load",itemsToLoad, "|Success rate ",(100 - rate )+"%"].join(' | ');
+            return ["|Items count",itemsCount,"|Loaded items",loadedItems, "|Success rate ",(100 - rate )+"%"].join(' | ');
         }
 
         return {
@@ -238,7 +238,7 @@ exports.startup = function(){
         var tiddlerFields =$tw.wiki.deserializeTiddlers(getTiddlerType(metadata.path),tiddlerData)[0];
         if (!tiddlerFields) {
             //If the default parser for this tiddler did not work, try to parse it as text/plain
-            OTW.Debug.log("Were unable to parse " + path + ". Trying to import as text/plain");
+            OTW.Debug.log("Were unable to parse " + metadata.path + ". Trying to import as text/plain");
             OTW.Debug.log(tiddlerData);
             tiddlerFields = $tw.Wiki.tiddlerDeserializerModules["text/plain"](tiddlerData, {});
             if (!tiddlerFields)
@@ -249,7 +249,7 @@ exports.startup = function(){
 
     }
 
-    //Receives a repository object and returns a tiddler containing all the
+    //Receives a repository object and returns one tiddler containing all the
     // repository information in tiddler's fields
     function repoToTiddler(repo){
         repo.title = "$:/repositories/" + repo.name;
@@ -395,13 +395,10 @@ exports.startup = function(){
 
     function registerFolder(folder,repoName){
         var folders = OTW.sandbox.folders;
-        var tiddler = {
-            'otw-type':'folder',
-            'otw-path':folder.path,
-            'list': [] //list of child files
-        };
 
-        tiddler = copyFieldsAsOctoFields(tiddler,folder);
+        var tiddler = copyFieldsAsOctoFields({},folder);
+        tiddler['otw-type'] = 'folder';
+        tiddler.list = [];
         //the root folder is the repo name
         tiddler.title = folder.path ? [ repoName, folder.path].join('/') : repoName;
         tiddler['otw-parent'] = getParentFolder(tiddler.title);
