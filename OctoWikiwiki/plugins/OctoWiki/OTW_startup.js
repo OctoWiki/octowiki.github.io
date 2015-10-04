@@ -6,6 +6,7 @@ module-type: startup
 This module creates the basic structure needed for the plugin.
 This included the OTW Object namespace and the loading of the token
 \*/
+
 (function(){
 /*jslint node: true, browser: true */
 /*global $tw: false */
@@ -24,7 +25,9 @@ exports.startup = function(){
         /* --- Declaration ZONE ---*/
         //============================
 
-        var logger = new $tw.utils.Logger("OTW");
+        var logger = new $tw.utils.Logger("OTW"),
+            OTW = { utils: {}, gitHub:{} }; // Our main scope!
+            OTW.sandbox = require('$:/plugins/danielo515/OctoWiki/sandbox').sandbox;
 
         function setDebug(){
             var debugActive = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "Debug/Active");
@@ -319,7 +322,7 @@ exports.startup = function(){
 
         /* --- OTW namespace creation and basic initialization---*/
     //===============================================================================0
-        var OTW = { utils: {}, gitHub:{} };
+
         OTW.utils.getConfig = getConfig;
         OTW.utils.newClient = newClient;
         OTW.utils.listRepos = listRepos;
