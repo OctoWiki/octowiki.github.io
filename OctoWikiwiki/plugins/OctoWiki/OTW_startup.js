@@ -334,6 +334,8 @@ exports.startup = function(){
         OTW.Login = Login;
         OTW.config = configFactory();
         OTW.repository = repository();
+        OTW.wiki = new $tw.Wiki();
+        OTW.wiki.addTiddler({title:"Sandboxed",text:"This tiddler is totally isolated!!"});
         setDebug();
 
         /* --- Here is where startup stuff really starts ---*/
