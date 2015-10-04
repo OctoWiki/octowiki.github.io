@@ -212,7 +212,10 @@ exports.startup = function(){
         listRepos(addRepos);
     }
 
-    function Logout(){}
+    function Logout(){
+        OTW.config.setToken('');
+        location.reload();
+    }
 
     //List all the repositories of the currently logged user
     function listRepos(callback){
@@ -372,6 +375,17 @@ exports.startup = function(){
         }
     }
 
+    function copyFieldsAsOctoFields(destination){
+        $tw.utils.each(Array.prototype.slice.call(arguments, 1), function(source) {
+            if(source) {
+                for(var property in source) {
+                    destination['otw-'+property] = source[property];
+                }
+            }
+        });
+        return destination;
+    }
+
     /*---------------- Other stuff -------------------*/
     //====================================================
 
@@ -386,6 +400,8 @@ exports.startup = function(){
             'otw-path':folder.path,
             'list': [] //list of child files
         };
+
+        tiddler = copyFieldsAsOctoFields(tiddler,folder);
         //the root folder is the repo name
         tiddler.title = folder.path ? [ repoName, folder.path].join('/') : repoName;
         tiddler['otw-parent'] = getParentFolder(tiddler.title);
@@ -396,15 +412,15 @@ exports.startup = function(){
 
     function registerFile(metadata,repoName){
         var tiddlerFiles=OTW.sandbox.files,
-            tiddlerFields = $tw.utils.extend({},metadata);
+            tiddlerFields = copyFieldsAsOctoFields({},metadata);
         tiddlerFields.title = [repoName,metadata.path].join('/');
 
         var parent = OTW.sandbox.folders[getParentFolder(tiddlerFields.title)];
 
-        parent.list = parent.list.slice(0); //ugly workaround becaushe chrome refuses to work as EcMaScript describes
-        parent.list.push(tiddlerFields.title);
+        parent.list = parent.list.slice(0); //ugly workaround because chrome refuses to work as EcMaScript describes
+        parent.list.push(tiddlerFields.title); //Register this tiddler in the metadata of it's parent folder  tiddler
 
-        tiddlerFiles[tiddlerFields.title] = tiddlerFields;
+        tiddlerFiles[tiddlerFields.title] = tiddlerFields; // Register the metadata tiddler
         $tw.wiki.addTiddlers([tiddlerFields,parent]); // refresh the tiddler store with the new data
     }
 
@@ -428,6 +444,7 @@ exports.startup = function(){
         OTW.gitHub.commit = commitFile;
         OTW.registerFolder = registerFolder;
         OTW.Login = Login;
+        OTW.logout = Logout;
         OTW.config = configFactory();
         OTW.repository = repository();
         OTW.wiki = new $tw.Wiki();

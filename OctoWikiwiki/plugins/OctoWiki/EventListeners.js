@@ -57,6 +57,10 @@ exports.startup = function(){
         OTW.gitHub.commit(tiddler.getRepository(),tiddler.getPath(),tiddler.render(),message);
     });
 
+    $tw.rootWidget.addEventListener("tm-otw-logout", function(event){
+        OTW.logout();
+    });
+
     $tw.rootWidget.addEventListener("tm-otw-set-token",function(event) {
         var token = event.paramObject.token;
         $tw.OTW.config.setToken(token);
