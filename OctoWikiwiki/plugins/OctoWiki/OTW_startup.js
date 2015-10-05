@@ -399,7 +399,7 @@ exports.startup = function(){
         var tiddler = copyFieldsAsOctoFields({},folder);
         tiddler['otw-type'] = 'folder';
         tiddler.list = [];
-        //the root folder is the repo name
+        //the root folder is the repo name and does not require to have any /
         tiddler.title = folder.path ? [ repoName, folder.path].join('/') : repoName;
         tiddler['otw-parent'] = getParentFolder(tiddler.title);
 

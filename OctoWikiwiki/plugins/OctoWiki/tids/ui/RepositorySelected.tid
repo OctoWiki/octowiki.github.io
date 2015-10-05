@@ -3,19 +3,28 @@ tags: $:/OTW/UI
 
 \define listChildren(parent)
  <$list filter="[prefix{$:/state/OTW/Repository/Selected}otw-parent[$parent$]!sort[]]">
-    <ul><li><$macrocall $name="listFile"/><$macrocall $name="listFolder"/></li>
+    <ul><li><$macrocall $name="listFolder"/></li>
+           <ul><$macrocall $name="listFiles"/></ul>
         <$macrocall $name="listChildren" parent=<<currentTiddler>> />
       </ul>
     </$list>
 \end
 \define listRoot(repo)
 <$list filter="[all[shadows+tiddlers]otw-parent[$repo$]!sort[]]" emptyMessage="""<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Loading"/>""">
+           <ul><$list filter="[list[]sort[]]">
+               <li><$macrocall $name="listFile"/></li>
+           </$list>
+     </ul>
     <ul><li><$macrocall $name="listFile"/><$macrocall $name="listFolder"/></li>
         <$macrocall $name="listChildren" parent=<<currentTiddler>> />
       </ul>
     </$list>
 \end
-
+\define listFiles()
+<$list filter="[list[]sort[]]">
+               <li><$macrocall $name="listFile"/></li>
+ </$list>
+\end
 \define listFile()
 <$list filter="[all[current]!otw-type[folder]limit[1]]"><dl><dt><$button class="tc-btn-invisible tc-tiddlylink">
     <$action-navigate $to="$:/plugins/danielo515/OctoWiki/ui/Editor"/>
