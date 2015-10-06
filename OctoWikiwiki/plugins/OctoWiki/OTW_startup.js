@@ -151,8 +151,10 @@ exports.startup = function(){
                         if(isTiddlerFile(item.path)){
                             loadFile(item.path,branch,
                                 function(data){
-                                    registerFile(item,repoName);
-                                    loadTiddlerFromGithub(item,data);});
+                                    registerFile(item,repoName).bind( //Bind the metadata with the sandboxed tiddler
+                                        loadTiddlerFromGithub(item,data)
+                                    );
+                                });
                         } else{
                             itemsToLoad--;loadedItems++; //We are not going to load this file anyway
                         }
@@ -235,6 +237,7 @@ exports.startup = function(){
     }
 
     function loadTiddlerFromGithub(metadata,tiddlerData){
+        // from the path we extract the type based on the extension
         var tiddlerFields =$tw.wiki.deserializeTiddlers(getTiddlerType(metadata.path),tiddlerData)[0];
         if (!tiddlerFields) {
             //If the default parser for this tiddler did not work, try to parse it as text/plain
@@ -246,7 +249,7 @@ exports.startup = function(){
         }
 
         OTW.sandbox.tiddlers.push(tiddlerFields);
-
+        return tiddlerFields; //usful to be able to use fields outside, like binding.
     }
 
     //Receives a repository object and returns one tiddler containing all the
@@ -386,6 +389,7 @@ exports.startup = function(){
         return destination;
     }
 
+
     /*---------------- Other stuff -------------------*/
     //====================================================
 
@@ -409,6 +413,7 @@ exports.startup = function(){
 
     function registerFile(metadata,repoName){
         var tiddlerFiles=OTW.sandbox.files,
+            metadataTiddler = {},
             tiddlerFields = copyFieldsAsOctoFields({},metadata);
         tiddlerFields.title = [repoName,metadata.path].join('/');
 
@@ -419,6 +424,17 @@ exports.startup = function(){
 
         tiddlerFiles[tiddlerFields.title] = tiddlerFields; // Register the metadata tiddler
         $tw.wiki.addTiddlers([tiddlerFields,parent]); // refresh the tiddler store with the new data
+
+        function bind (sandboxedFields){
+        // binds this metadata tiddler with the actual tiddler on the sandbox wiki
+            tiddlerFields['otw-sandbox-title'] = sandboxedFields.title;
+            $tw.wiki.addTiddler(tiddlerFields); //update the tiddler
+            return metadataTiddler //retun core again.
+        };
+
+        metadataTiddler.bind = bind;
+
+        return metadataTiddler;
     }
 
     function getParentFolder(path){

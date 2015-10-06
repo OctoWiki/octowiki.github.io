@@ -3,7 +3,9 @@ title: $:/plugins/danielo515/OctoWiki/sandbox
 type: application/javascript
 module-type: library
 
-Creates a fully operational sandboxed wiki
+Creates a sandboxed fully operational tiddlywiki object.
+Returns the sandboxed wiki, but also provides an interface for an easier interaction
+with her(the wiki).
 \*/
 
 (function(){
@@ -11,7 +13,7 @@ Creates a fully operational sandboxed wiki
     /*global $tw: false */
     "use strict";
 
-    var sandbox = {};
+    var sandbox = {}, $$tw;
 
     sandbox.boot = function (preloadTiddlers) {
         preloadTiddlers  = preloadTiddlers || [];
@@ -35,7 +37,7 @@ Creates a fully operational sandboxed wiki
                 delete definition["(DOM)"];
                 actualDefine('oldDom', moduleType, definition);
                 actualDefine(moduleName, moduleType, {"(DOM)" : function(x){
-                    console.log(x);
+                    $tw.OTW.Debug.log("Hijacked call to (DOM) with: ",x);
                     console.log(definition._DOM_(x));
                     return [
                         $tw.wiki.getTiddler("$:/core").fields
@@ -47,10 +49,21 @@ Creates a fully operational sandboxed wiki
             }
            };
 
-        return _boot($$tw); // Boot the $$tw object
+        $$tw = _boot($$tw);
+
+        return $$tw; // Boot the $$tw object
 
     };
 
+    /*-- Force the navigation to the provided list of tiddlers
+     closing all the other tiddlers --*/
+    function setOpenTiddlers(tiddlersTitles){
+        var StoryList = {title:'$:/StoryList', list: tiddlersTitles};
+        $$tw.wiki.addTiddler( new $$tw.Tiddler(StoryList));
+    }
+
+
+    sandbox.setOpenTiddlers = setOpenTiddlers;
 
     exports.sandbox = sandbox;
 })();
