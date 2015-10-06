@@ -13,9 +13,9 @@ with her(the wiki).
     /*global $tw: false */
     "use strict";
 
-    var sandbox = {}, $$tw;
+    var sandbox = {}, $$tw, previousState;
 
-    sandbox.boot = function (preloadTiddlers) {
+    function boot (preloadTiddlers) {
         preloadTiddlers  = preloadTiddlers || [];
         if(this.tiddlers) {
             preloadTiddlers = preloadTiddlers ? this.tiddlers.concat(preloadTiddlers) : preloadTiddlers;
@@ -23,8 +23,8 @@ with her(the wiki).
 
         console.log("Booting with the following preloaded tiddlers: ",preloadTiddlers);
 
-        var $$tw = _bootprefix( {'preloadTiddlers':preloadTiddlers} ), //create the barebones $tw object
-            actualDefine = $$tw.modules.define; //save the define method that we are going to hijack
+         $$tw = _bootprefix( {'preloadTiddlers':preloadTiddlers} ); //create the barebones $tw object
+          var  actualDefine = $$tw.modules.define; //save the define method that we are going to hijack
 
         // Here is where the sandboxing magic occurs. We have to hijack the define method to make it behave different.
         // On boot $TW registers a module to extract tiddlers from the DOM called "(DOM)".
@@ -49,9 +49,11 @@ with her(the wiki).
             }
            };
 
-        $$tw = _boot($$tw);
+        this.tw = _boot($$tw); // Boot the $$tw object
 
-        return $$tw; // Boot the $$tw object
+        previousState = $tw.utils.extend({},$$tw.wiki.changeCount);
+        $tw.OTW.Debug.log("Initial state of sandboxed wiki: ",previousState);
+        return $$tw;
 
     };
 
@@ -62,8 +64,28 @@ with her(the wiki).
         $$tw.wiki.addTiddler( new $$tw.Tiddler(StoryList));
     }
 
+    function getChanges(){
+        var changes={}, currentState = $tw.utils.extend({},$$tw.wiki.changeCount);
+        $tw.utils.each(currentState, function(count,title){
+            if( previousState[title] !== count) { //tiddler has changed
+                changes[title]= { deleted: ! $$tw.wiki.tiddlerExists(title) };
+            }
+        });
+        return changes;
+    }
 
+    function resetChanges(){
+        if($$tw){
+            previousState = $$tw.utils.extend({},$$tw.wiki.changeCount);
+        } else {
+            return {error:"The wiki has not booted!!"}
+        }
+    }
+
+    sandbox.boot = boot;
     sandbox.setOpenTiddlers = setOpenTiddlers;
+    sandbox.getChanges = getChanges;
+    sandbox.resetChanges = resetChanges;
 
     exports.sandbox = sandbox;
 })();

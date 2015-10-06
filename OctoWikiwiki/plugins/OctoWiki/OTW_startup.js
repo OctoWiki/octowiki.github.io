@@ -297,6 +297,14 @@ exports.startup = function(){
         $tw.wiki.addTiddler( new $tw.Tiddler(StoryList));
     }
 
+    function tagTiddler(title,tag){
+        var tiddler= $tw.wiki.getTiddler(title);
+        if(tiddler){
+            var fields=tiddler.fields;
+        }
+        $tw.wiki.addTiddler(new $tw.Tiddler(fields,{tags:tag}));
+    }
+
     function getTiddlerType(path){
         var type = $tw.utils.getFileExtensionInfo(getFileExtension(path));
         return type && type.type;
@@ -390,6 +398,13 @@ exports.startup = function(){
     }
 
 
+    /*---------------- Sandbox Stuff ------------------*/
+
+    function activateSandboxMode(){
+        tagTiddler('$:/plugins/danielo515/OctoWiki/Styles/sandbox-toolbar','$:/tags/Stylesheet');
+        setTiddlerText('$:/state/OTW/sandboxMode','yes');
+    }
+
     /*---------------- Other stuff -------------------*/
     //====================================================
 
@@ -454,7 +469,9 @@ exports.startup = function(){
         OTW.utils.setOpenTiddlers =setOpenTiddlers;
         OTW.utils.getParentFolder = getParentFolder;
         OTW.utils.getGithubTiddler = getTiddler;
+        OTW.utils.tagTiddler = tagTiddler;
         OTW.gitHub.commit = commitFile;
+        OTW.activateSandboxMode = activateSandboxMode;
         OTW.registerFolder = registerFolder;
         OTW.Login = Login;
         OTW.logout = Logout;

@@ -1,0 +1,14 @@
+.otw-wiki-wrapper .tc-dropzone .tc-topbar-right {
+  display: none; }
+
+.otw-wiki-wrapper .tc-dropzone .tc-sidebar-scrollable {
+  display: none; }
+
+.otw-wiki-wrapper .tc-dropzone .tc-story-river {
+  display: none; }
+
+.otw-wiki-wrapper .tc-dropzone .otw-sandbox-controls svg {
+  fill: #bbbbbb; }
+
+.otw-wiki-wrapper .tc-dropzone .otw-sandbox-controls button:hover svg {
+  fill: #000000; }
