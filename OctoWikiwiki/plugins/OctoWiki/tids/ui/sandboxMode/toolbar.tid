@@ -1,8 +1,0 @@
-title: $:/plugins/danielo515/OctoWiki/ui/Sandbox/Toolbar
-tags: $:/tags/TopLeftBar
-
-<$reveal state="$:/state/OTW/sandboxMode" type="match" text="yes" default="no" retain="yes">
-    <div class="otw-sandbox-controls">
-        {{$:/plugins/danielo515/OctoWiki/Images/octopus.svg}}
-    </div>
-</$reveal>

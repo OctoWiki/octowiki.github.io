@@ -1,0 +1,30 @@
+html .otw-sidebar-frame {
+  -webkit-transition: 1s ease-in-out;
+  -moz-transition: 1s ease-in-out;
+  -o-transition: 1s ease-in-out;
+  transition: 1s ease-in-out;
+  top: 0px;
+  position: fixed;
+  left: -40%;
+  width: 40%;
+  height: 100%; }
+  html .otw-sidebar-frame .otw-sidebar-content {
+    opacity: 0;
+    height: 100%;
+    z-index: 150;
+    padding-top: 10pt;
+    padding-left: 10pt; }
+    html .otw-sidebar-frame .otw-sidebar-content h1 button.tc-tiddlylink {
+      color: #000000; }
+      html .otw-sidebar-frame .otw-sidebar-content h1 button.tc-tiddlylink:hover {
+        text-decoration: none; }
+  html .otw-sidebar-frame .otw-sidebar-controls {
+    -webkit-transition: 1s ease-in-out;
+    -moz-transition: 1s ease-in-out;
+    -o-transition: 1s ease-in-out;
+    transition: 1s ease-in-out;
+    position: fixed;
+    top: 10pt;
+    left: 10pt; }
+    html .otw-sidebar-frame .otw-sidebar-controls button svg {
+      fill: #aaaaaa; }

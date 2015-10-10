@@ -3,3 +3,4 @@ gh-pages
 images
 reload.sh
 node_modules/
+deprecated/

@@ -1,5 +1,5 @@
 title: $:/plugins/danielo515/OctoWiki/ui/Buttons/Login
-tags: $:/tags/GithubMenu
+tags: $:/tags/OTW/controls
 
 <$reveal type="nomatch" state="$:/state/OctoWiki/IsLogged" text="yes">
 <$button class="tc-btn-invisible tc-tiddlylink"

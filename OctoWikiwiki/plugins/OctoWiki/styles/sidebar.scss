@@ -1,0 +1,54 @@
+@mixin transition($duration) {
+
+  -webkit-transition: $duration ease-in-out;
+  -moz-transition: $duration ease-in-out;
+  -o-transition: $duration ease-in-out;
+  transition: $duration ease-in-out;
+
+}
+
+@mixin transition-opacity($duration) {
+  -webkit-transition: opacity $duration ease-in-out;
+  -moz-transition: opacity $duration ease-in-out;
+  transition: opacity $duration ease-in-out;
+}
+
+
+html {
+  .otw-sidebar-frame{
+      @include transition(1s);
+      top: 0px;
+      position: fixed;
+      left: -40%;
+      width: 40%;
+      height: 100%;
+
+    .otw-sidebar-content {
+      opacity: 0;
+      height:100%;
+      z-index: 150;
+      padding-top: 10pt;
+      padding-left: 10pt;
+      h1 {
+        button.tc-tiddlylink {
+          color: #000000;
+          &:hover{
+            text-decoration: none;
+          }
+        }
+      }
+    }
+
+    .otw-sidebar-controls{
+      @include transition(1s);
+      position: fixed;
+      top: 10pt;
+      left: 10pt;
+      button{
+        svg{
+          fill: #aaaaaa;
+        }
+      }
+    }
+  }
+}

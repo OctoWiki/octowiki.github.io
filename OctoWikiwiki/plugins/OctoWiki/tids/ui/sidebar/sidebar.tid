@@ -1,0 +1,9 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Sandbox/Sidebar
+
+<div class="otw-sidebar-controls">
+<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Sandbox/Toolbar" mode="inline"/>
+</div>
+<div class="otw-sidebar-content">
+<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Sidebar/Logged" mode="inline"/>
+<hr style="width:90%;margin:0px">
+</div>

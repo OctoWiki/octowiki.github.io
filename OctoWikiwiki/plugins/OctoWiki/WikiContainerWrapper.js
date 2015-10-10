@@ -2,7 +2,9 @@
 title: $:/plugins/danielo515/OctoWiki/startup/WikiWrapper.js
 type: application/javascript
 module-type: startup
-Title, stylesheet and page rendering
+
+This module creates the required ui elements outside the main container after the wiki is rendered.
+It also installs the required classes to identify the host wiki.
 \*/
 (function(){
 
@@ -19,6 +21,14 @@ Title, stylesheet and page rendering
 
     exports.startup = function() {
         $tw.pageContainer.classList.add('otw-wiki-wrapper');
+
+        $tw.OTW.sidebar = new $tw.utils.Sidebar($tw.wiki);
+        /*$tw.rootWidget.addEventListener("otw-slide",function(event) {
+            $tw.sidebar.display(event.param);
+        });*/
+        $tw.OTW.sidebar.display('$:/plugins/danielo515/OctoWiki/ui/Sandbox/Sidebar');
+
+
     };
 
 })();
