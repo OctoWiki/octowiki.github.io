@@ -65,10 +65,12 @@ with her(the wiki).
     }
 
     function getChanges(){
-        var changes={}, currentState = $tw.utils.extend({},$$tw.wiki.changeCount);
+        var changes={ deleted: [],modified: [] },
+            currentState = $tw.utils.extend({},$$tw.wiki.changeCount); //get current state copying the changeCount object
         $tw.utils.each(currentState, function(count,title){
             if( previousState[title] !== count) { //tiddler has changed
-                changes[title]= { deleted: ! $$tw.wiki.tiddlerExists(title) };
+                var status = $$tw.wiki.tiddlerExists(title) ? 'modified' : 'deleted';
+                changes[status].push(title);
             }
         });
         return changes;
