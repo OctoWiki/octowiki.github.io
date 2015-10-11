@@ -18,6 +18,12 @@ exports.after = ["OctoWiki"];
 exports.platforms = ["browser"];
 exports.synchronous = true;
 
+    var pluginTitles={
+        modified: "$:/temp/OTW/modified-tiddlers",
+         deleted: "$:/temp/OTW/deleted-tiddlers",
+           "new": "$:/temp/OTW/new-tiddlers"
+    };
+
 exports.startup = function(){
     var logger = new $tw.utils.Logger("OctoWiki"),
         OTW = $tw.OTW;
@@ -55,6 +61,49 @@ exports.startup = function(){
         OTW.Debug.log("Commiting tiddler ", title);
 
         OTW.gitHub.commit(tiddler.getRepository(),tiddler.getPath(),tiddler.render(),message);
+    });
+
+    $tw.rootWidget.addEventListener("tm-otw-show-changes", function(event){
+        function generateChangesPlugin(type,tidList,index){
+            var template= {
+                type: "application/json",
+                "plugin-type": "import",
+                "status": "pending"
+                },
+                customFields= { title: pluginTitles[type]},
+                changedTiddlers={};
+            $tw.utils.each(tidList,function(title){
+                var fileTiddler = index[title];
+                if(!fileTiddler) return;
+                changedTiddlers[fileTiddler.title]= fileTiddler;
+            });
+            customFields.text = JSON.stringify(changedTiddlers,null,$tw.config.preferences.jsonSpaces);
+            return new $tw.Tiddler(template,customFields)
+        }
+
+        var index = OTW.repository.indexTiddlers('otw-sandbox-title'), // repo tiddlers indexed by tiddler title
+            changes = OTW.sandbox.getChanges(function(title){ return !!index[title]}); //get the changes providing a function to determine if a tiddler is new.
+
+        if(changes.modified.length > 0){
+            $tw.wiki.addTiddler(generateChangesPlugin('modified',changes.modified,index));
+        }
+        if(changes.deleted.length > 0){
+            $tw.wiki.addTiddler(generateChangesPlugin('deleted',changes.deleted,index));
+        }
+        if(changes.new.length > 0){
+            $tw.wiki.addTiddler(generateChangesPlugin('new',changes.new,index));
+        }
+    });
+
+    $tw.rootWidget.addEventListener("tm-otw-sandbox-open-tiddler",function(event){
+        console.log(event);
+        var title = event.paramObject.tiddler || event.tiddlerTitle,//defaults to the caller tiddler. This is useful if tiddlers are listed on a list widget.
+            tiddler = $tw.wiki.getTiddler(title),
+            fields = tiddler.fields;
+        if(!fields['otw-sandbox-title']){ return; }
+        OTW.Debug.log("Oppening sandboxed file", title);
+        OTW.sandbox.openTiddler(fields['otw-sandbox-title']);
+
     });
 
     $tw.rootWidget.addEventListener("tm-otw-logout", function(event){

@@ -16,28 +16,60 @@
 
 html {
   .otw-sidebar-frame{
+
       @include transition(1s);
       top: 0px;
       position: fixed;
       left: -40%;
       width: 40%;
       height: 100%;
+    div { // Small workaround that I want to remove. It's because maketranscludewidget injects a div
+      height: 100%;
 
-    .otw-sidebar-content {
-      opacity: 0;
-      height:100%;
-      z-index: 150;
-      padding-top: 10pt;
-      padding-left: 10pt;
-      h1 {
-        button.tc-tiddlylink {
-          color: #000000;
-          &:hover{
-            text-decoration: none;
+      .table {
+        /* Table styles thanks to http://blogs.msdn.com/b/kurlak/archive/2015/02/20/filling-the-remaining-height-of-a-container-while-handling-overflow-in-css.aspx */
+        display: table;
+        width: 100%;
+        .table-row {
+          display: table-row;
+        }
+        .table-header {
+          height: auto;
+        }
+        .table-body {
+          height: 100%;
+        }
+        .table-body-wrapper{
+          width: 100%;
+          height: 100%;
+          position: relative;
+          .table-body-content{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            overflow: auto;
+          }
+
+        }
+      }
+      .otw-sidebar-content {
+        opacity: 0;
+        height:100%;
+        z-index: 150;
+        padding-top: 10pt;
+        padding-left: 10pt;
+
+        h1 {
+          button.tc-tiddlylink {
+            color: #000000;
+            &:hover{
+              text-decoration: none;
+            }
           }
         }
       }
-    }
 
     .otw-sidebar-controls{
       @include transition(1s);
@@ -50,5 +82,6 @@ html {
         }
       }
     }
+  }
   }
 }

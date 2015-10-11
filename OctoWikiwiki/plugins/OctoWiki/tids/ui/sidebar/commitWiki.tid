@@ -4,6 +4,6 @@ tags: $:/tags/OTW/controls/logged
 <$button class="tc-btn-invisible tc-tiddlylink"
 aria-label = {{$:/plugins/danielo515/OctoWiki/language/Buttons/Commit/Caption}}
 tooltip = {{$:/plugins/danielo515/OctoWiki/language/Buttons/Commit/Caption}}>
-   <$action-sendmessage $message="tm-otw-commit-wiki" token="" />
+   <$action-sendmessage $message="tm-otw-show-changes" token="" />
           Commit
 </$button>

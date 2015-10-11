@@ -84,14 +84,17 @@ exports.startup = function(){
 
         }
 
+    /*------------Repository Stuff ----------------*/
+    /*==========================================*/
 
     var repository = function(){
-        var currentRepository, repoName,
+        var currentRepository, repoName, repoFilter,
             itemsCount,itemsToLoad,loadedItems,
             setSelected = function(repo,name){
                 reset();
                 currentRepository = repo;
                 repoName = name;
+                compileRepoFilter();
             },
             isSelected = function (name) {
             return repoName === name;
@@ -103,6 +106,25 @@ exports.startup = function(){
         function reset(){
             currentRepository = null; repoName = null;
             itemsCount = 0, itemsToLoad=0,loadedItems=0;
+        }
+
+        function compileRepoFilter(){
+        //Compiles the filter for fetching all the tiddlers related to current repository
+            var filter = ["[all[shadows+tiddlers]prefix[",repoName,"]!otw-type[folder]]"].join('');
+            repoFilter = $tw.wiki.compileFilter(filter);
+        }
+
+        function indexRepoTiddlers(indexField){
+        //Returns all the tiddlers that belongs to the current repository.
+        // Tiddlers will be indexed by the field indexField into a hashmap
+            var titles = repoFilter(),
+                tiddlers = {};
+            $tw.utils.each(titles,function(title){
+                var fields=$tw.wiki.getTiddler(title).fields; //all tiddlers exists beforehand because they were returned by a filter!
+                tiddlers[fields[indexField]] = fields;
+            });
+
+            return tiddlers;
         }
 
         function list(branch,callback){
@@ -188,6 +210,7 @@ exports.startup = function(){
             isSelected: isSelected,
             getSelected: getSelected,
             list: list,
+            indexTiddlers:indexRepoTiddlers,
             successRate:succcessRate,
             load:load
         }

@@ -64,12 +64,27 @@ with her(the wiki).
         $$tw.wiki.addTiddler( new $$tw.Tiddler(StoryList));
     }
 
-    function getChanges(){
-        var changes={ deleted: [],modified: [] },
-            currentState = $tw.utils.extend({},$$tw.wiki.changeCount); //get current state copying the changeCount object
+    function openTiddler(title){
+        var tw= $$tw; //in a future we may support several wikis opened at once
+        var OpenedTiddlers = tw.wiki.getTiddlerList("$:/StoryList");
+        OpenedTiddlers.push(title);
+        var StoryList = {title:'$:/StoryList',list:OpenedTiddlers};
+        tw.wiki.addTiddler( new tw.Tiddler(StoryList));
+    }
+
+    function getChanges(isNew){
+    //Returns an object with deleted and modified tiddlers.
+    // If a isNew function is provided it also divides the results into a new category.
+    // isNew receives a title and should return true if the tiddler should be considered as new.
+    // This is because a tiddler is new on certain context, and there is no way for the sandbox to determine such context
+        var changes={ deleted: [], modified: [], "new":[] },
+            currentState = $tw.utils.extend({},$$tw.wiki.changeCount), //get current state copying the changeCount object
+            modifiedORnew = function(title){
+                return typeof isNew === "function" && isNew(title) ? 'new' : 'modified' ;
+            };
         $tw.utils.each(currentState, function(count,title){
             if( previousState[title] !== count) { //tiddler has changed
-                var status = $$tw.wiki.tiddlerExists(title) ? 'modified' : 'deleted';
+                var status = $$tw.wiki.tiddlerExists(title) ? modifiedORnew(title) : 'deleted';
                 changes[status].push(title);
             }
         });
@@ -86,6 +101,7 @@ with her(the wiki).
 
     sandbox.boot = boot;
     sandbox.setOpenTiddlers = setOpenTiddlers;
+    sandbox.openTiddler = openTiddler;
     sandbox.getChanges = getChanges;
     sandbox.resetChanges = resetChanges;
 
