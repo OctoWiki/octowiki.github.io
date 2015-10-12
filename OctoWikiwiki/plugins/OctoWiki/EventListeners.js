@@ -64,35 +64,50 @@ exports.startup = function(){
     });
 
     $tw.rootWidget.addEventListener("tm-otw-show-changes", function(event){
-        function generateChangesPlugin(type,tidList,index){
+        function generateChangesPlugin(type,tiddlers){
             var template= {
                 type: "application/json",
                 "plugin-type": "import",
                 "status": "pending"
                 },
                 customFields= { title: pluginTitles[type]},
-                changedTiddlers={};
-            $tw.utils.each(tidList,function(title){
-                var fileTiddler = index[title];
-                if(!fileTiddler) return;
-                changedTiddlers[fileTiddler.title]= fileTiddler;
+                changedTiddlers={tiddlers:{}};
+            $tw.utils.each(tiddlers,function(tiddler){
+                console.log("Packing ",tiddler.title," Into ",customFields.title);
+                changedTiddlers.tiddlers[tiddler.title]= tiddler;
             });
             customFields.text = JSON.stringify(changedTiddlers,null,$tw.config.preferences.jsonSpaces);
             return new $tw.Tiddler(template,customFields)
         }
 
         var index = OTW.repository.indexTiddlers('otw-sandbox-title'), // repo tiddlers indexed by tiddler title
-            changes = OTW.sandbox.getChanges(function(title){ return !!index[title]}); //get the changes providing a function to determine if a tiddler is new.
+            changes = OTW.sandbox.getChanges(function(title){ return !(!!index[title])}); //get the changes providing a function to determine if a tiddler is new.
 
-        if(changes.modified.length > 0){
-            $tw.wiki.addTiddler(generateChangesPlugin('modified',changes.modified,index));
-        }
-        if(changes.deleted.length > 0){
-            $tw.wiki.addTiddler(generateChangesPlugin('deleted',changes.deleted,index));
-        }
-        if(changes.new.length > 0){
-            $tw.wiki.addTiddler(generateChangesPlugin('new',changes.new,index));
-        }
+        OTW.Debug.log("Indexed tiddlers:" ,index);
+        OTW.Debug.log("Changes:" ,changes);
+
+        $tw.utils.each(changes,function(titles,type){
+            var tiddlers = [],process;
+            if(type === 'modified'){
+                process = function(title){
+                    tiddlers.push(index[title]);
+                }
+            }
+            if(type === 'new'){
+                process = function(title){
+                    tiddlers.push( OTW.repository.newMetadataTiddler(title));
+                }
+            }
+            if(type === 'deleted'){
+                process = function(title){
+                    var tid = index[title];
+                    tid && tiddlers.push(tid)
+                }
+            }
+            $tw.utils.each(titles,process);
+            $tw.wiki.addTiddler(generateChangesPlugin(type,tiddlers));
+        });
+
     });
 
     $tw.rootWidget.addEventListener("tm-otw-sandbox-open-tiddler",function(event){

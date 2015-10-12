@@ -41,6 +41,8 @@ Modal sidebar
         var widgetNode = this.wiki.makeTranscludeWidget(title,{parentWidget: $tw.rootWidget, document: document, parseAsInline: true, variables: variables});
         widgetNode.render(notification,null);
 
+        $tw.utils.addClass(notification.firstChild,"otw-sidebar-wrapper");
+
         refreshHandler = function(changes) {
             widgetNode.refresh(changes,notification,null);
         };

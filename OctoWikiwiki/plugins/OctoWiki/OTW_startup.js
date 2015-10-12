@@ -90,6 +90,7 @@ exports.startup = function(){
     var repository = function(){
         var currentRepository, repoName, repoFilter,
             itemsCount,itemsToLoad,loadedItems,
+            defaultTiddlersPath ="tiddlers",
             setSelected = function(repo,name){
                 reset();
                 currentRepository = repo;
@@ -102,6 +103,39 @@ exports.startup = function(){
             getSelected = function(){
             return currentRepository;
         };
+
+        /*
+         Transliterate string from cyrillic russian to latin
+         Extracted from Tyddlywiki filesystem adaptor plugin:
+         https://github.com/Jermolene/TiddlyWiki5/blob/268da52f8cde11ba21beec084210ad2d0a378a09/plugins/tiddlywiki/filesystem/filesystemadaptor.js#L80
+         */
+        var transliterate = function(cyrillyc) {
+            var a = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"};
+            return cyrillyc.split("").map(function (char) {
+                return a[char] || char;
+            }).join("");
+        };
+
+        function generateTiddlerFilename(title,extension) {
+            // First remove any of the characters that are illegal in Windows filenames
+            var baseFilename = transliterate(title.replace(/<|>|\:|\"|\/|\\|\||\?|\*|\^|\s/g,"_"));
+            // Truncate the filename if it is too long
+            if(baseFilename.length > 200) {
+                baseFilename = baseFilename.substr(0,200);
+            }
+            return baseFilename + extension;
+        }
+
+        function newMetadataTiddler(title){
+        //Generate a metadata tiddler on the current repository on the default tiddlers folder
+            var filename = generateTiddlerFilename(title,'.tid'),
+                newTiddler = {type: 'text/plain'};
+            newTiddler.title = [repoName,defaultTiddlersPath,filename].join('/');
+            newTiddler['otw-path'] = [defaultTiddlersPath,filename].join('/');
+            newTiddler['otw-sandbox-title'] = title;
+
+            return newTiddler
+        }
 
         function reset(){
             currentRepository = null; repoName = null;
@@ -212,6 +246,7 @@ exports.startup = function(){
             list: list,
             indexTiddlers:indexRepoTiddlers,
             successRate:succcessRate,
+            newMetadataTiddler:newMetadataTiddler,
             load:load
         }
     };

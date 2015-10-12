@@ -24,6 +24,22 @@
     .tc-btn-big-green {
       margin: 0px;
     }
+    table {
+      &.deleted{
+        tbody{
+          td {
+            background-color: #ffecec;
+          }
+        }
+      }
+      &.new, &.modified{
+        tbody{
+          td {
+            background-color: #eaffea;
+          }
+        }
+      }
+    }
 
   }
 }

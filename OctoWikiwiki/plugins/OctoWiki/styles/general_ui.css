@@ -17,3 +17,7 @@
     width: 100%; }
   .tc-modal-wrapper .tc-modal-body .tc-btn-big-green {
     margin: 0px; }
+  .tc-modal-wrapper .tc-modal-body table.deleted tbody td {
+    background-color: #ffecec; }
+  .tc-modal-wrapper .tc-modal-body table.new tbody td, .tc-modal-wrapper .tc-modal-body table.modified tbody td {
+    background-color: #eaffea; }
