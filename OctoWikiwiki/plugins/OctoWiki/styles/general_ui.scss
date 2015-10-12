@@ -13,6 +13,11 @@
   border: 1px solid #aaaaaa;
 }
 
+ .otw-small-column{
+   padding: 0px;
+   margin:0px;
+   text-align: center;
+ }
 
 .tc-modal-wrapper {
   z-index: 1010;
@@ -23,9 +28,18 @@
     }
     .tc-btn-big-green {
       margin: 0px;
+      &:hover{
+        background-color:#44d845;
+      }
+    }
+    .otw-red {
+      background-color: #FF1010;
+      &:hover {
+        background-color: #F54C4C;
+      }
     }
     table {
-      &.deleted{
+      &.deleted{ //Change this if you finally will use one single table for everything
         tbody{
           td {
             background-color: #ffecec;

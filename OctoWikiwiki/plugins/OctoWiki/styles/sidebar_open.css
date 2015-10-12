@@ -1,7 +1,7 @@
 html div.otw-sidebar-frame {
   left: 0px;
   background-color: #f4f4f4; }
-  html div.otw-sidebar-frame div div.otw-sidebar-content {
+  html div.otw-sidebar-frame .otw-sidebar-wrapper div.otw-sidebar-content {
     opacity: 1; }
-  html div.otw-sidebar-frame div div.otw-sidebar-controls {
+  html div.otw-sidebar-frame .otw-sidebar-wrapper div.otw-sidebar-controls {
     left: 35%; }

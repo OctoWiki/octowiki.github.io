@@ -8,40 +8,41 @@ html .otw-sidebar-frame {
   left: -40%;
   width: 40%;
   height: 100%; }
-  html .otw-sidebar-frame div {
+  html .otw-sidebar-frame .otw-sidebar-wrapper {
     height: 100%; }
-    html .otw-sidebar-frame div .table {
+    html .otw-sidebar-frame .otw-sidebar-wrapper .table {
       /* Table styles thanks to http://blogs.msdn.com/b/kurlak/archive/2015/02/20/filling-the-remaining-height-of-a-container-while-handling-overflow-in-css.aspx */
       display: table;
-      width: 100%; }
-      html .otw-sidebar-frame div .table .table-row {
+      width: 100%;
+      height: 100%; }
+      html .otw-sidebar-frame .otw-sidebar-wrapper .table .table-row {
         display: table-row; }
-      html .otw-sidebar-frame div .table .table-header {
+      html .otw-sidebar-frame .otw-sidebar-wrapper .table .table-header {
         height: auto; }
-      html .otw-sidebar-frame div .table .table-body {
+      html .otw-sidebar-frame .otw-sidebar-wrapper .table .table-body {
         height: 100%; }
-      html .otw-sidebar-frame div .table .table-body-wrapper {
+      html .otw-sidebar-frame .otw-sidebar-wrapper .table .table-body-wrapper {
         width: 100%;
         height: 100%;
         position: relative; }
-        html .otw-sidebar-frame div .table .table-body-wrapper .table-body-content {
+        html .otw-sidebar-frame .otw-sidebar-wrapper .table .table-body-wrapper .table-body-content {
           position: absolute;
           top: 0;
           bottom: 0;
           left: 0;
           right: 0;
           overflow: auto; }
-    html .otw-sidebar-frame div .otw-sidebar-content {
+    html .otw-sidebar-frame .otw-sidebar-wrapper .otw-sidebar-content {
       opacity: 0;
       height: 100%;
       z-index: 150;
       padding-top: 10pt;
       padding-left: 10pt; }
-      html .otw-sidebar-frame div .otw-sidebar-content h1 button.tc-tiddlylink {
+      html .otw-sidebar-frame .otw-sidebar-wrapper .otw-sidebar-content h1 button.tc-tiddlylink {
         color: #000000; }
-        html .otw-sidebar-frame div .otw-sidebar-content h1 button.tc-tiddlylink:hover {
+        html .otw-sidebar-frame .otw-sidebar-wrapper .otw-sidebar-content h1 button.tc-tiddlylink:hover {
           text-decoration: none; }
-    html .otw-sidebar-frame div .otw-sidebar-controls {
+    html .otw-sidebar-frame .otw-sidebar-wrapper .otw-sidebar-controls {
       -webkit-transition: 1s ease-in-out;
       -moz-transition: 1s ease-in-out;
       -o-transition: 1s ease-in-out;
@@ -49,5 +50,5 @@ html .otw-sidebar-frame {
       position: fixed;
       top: 10pt;
       left: 10pt; }
-      html .otw-sidebar-frame div .otw-sidebar-controls button svg {
+      html .otw-sidebar-frame .otw-sidebar-wrapper .otw-sidebar-controls button svg {
         fill: #aaaaaa; }

@@ -15,6 +15,9 @@
 
 
 html {
+
+
+
   .otw-sidebar-frame{
 
       @include transition(1s);
@@ -23,13 +26,14 @@ html {
       left: -40%;
       width: 40%;
       height: 100%;
-    div { // Small workaround that I want to remove. It's because maketranscludewidget injects a div
+    .otw-sidebar-wrapper { // Small workaround that I want to remove. It's because maketranscludewidget injects a div
       height: 100%;
 
       .table {
         /* Table styles thanks to http://blogs.msdn.com/b/kurlak/archive/2015/02/20/filling-the-remaining-height-of-a-container-while-handling-overflow-in-css.aspx */
         display: table;
         width: 100%;
+        height: 100%;
         .table-row {
           display: table-row;
         }
@@ -54,6 +58,7 @@ html {
 
         }
       }
+
       .otw-sidebar-content {
         opacity: 0;
         height:100%;

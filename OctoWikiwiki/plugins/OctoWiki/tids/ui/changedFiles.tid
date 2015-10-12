@@ -11,12 +11,12 @@ title: $:/plugins/danielo515/OctoWiki/Repository/Files/Changes
 \define showTable(type)
 <table style="width:100%" class="$type$">
 <thead>
-<tr><td> File path </td><td> Tiddler title </td></tr>
+<tr><td class="otw-small-column">Select</td><td> File path </td><td> Tiddler title </td></tr>
 </thead>
 <tbody>
 <$list filter="[title[$:/temp/OTW/$type$-tiddlers]plugintiddlers[]]">
 <!-- note current Tiddler is set to each subTiddler of the plugin tiddler -->
-<tr> <td> <$view field="title"/> </td><td> <$view tiddler="$:/temp/OTW/$type$-tiddlers" subtiddler=<<currentTiddler>> field="otw-sandbox-title"/> </td></tr>
+<tr> <td class="otw-small-column"><$checkbox tiddler="$:/temp/OTW/$type$-tiddlers" field=<<currentTiddler>> unchecked="exclude" default="include" checked="include"></$checkbox></td> <td> <$view field="title"/> </td><td> <$view tiddler="$:/temp/OTW/$type$-tiddlers" subtiddler=<<currentTiddler>> field="otw-sandbox-title"/> </td></tr>
 </$list>
 </tbody>
 </table>
@@ -27,3 +27,6 @@ title: $:/plugins/danielo515/OctoWiki/Repository/Files/Changes
 <<listChanges "modified" "Modified">>
 
 <<listChanges "new" "New">>
+
+<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Buttons/Editor/Commit" mode="inline"/>
+<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Buttons/Editor/Cancel" mode="inline"/>
