@@ -36,20 +36,18 @@ exports.startup = function(){
     /*****************************************************************************
      ########################### EVENT LISTENERS ##################################*/
     $tw.rootWidget.addEventListener("tm-otw-load-repository",function(event) {
-        var client = $tw.OTW.client,
-            repoName = event.paramObject.repository,
+        var repoName = event.paramObject.repository,
             username = event.paramObject.username,
             //get the details of the repository we want to navigate
-            repository = client.getRepo(username, repoName),
             branch='master';
+        
+        OTW.repository.open(username,repoName);
 
-        OTW.repository.setSelected(repository,repoName);
-
-        OTW.repository.load(branch,
-            function(rate){
-                logger.log("Repository loaded!! ",rate);
-                OTW.$ = OTW.sandbox.boot(); // Boot and save the sandboxed wiki
-            });
+        OTW.repository.load(branch,function(rate)
+                {
+                    logger.log("Repository loaded!! ",rate);
+                    OTW.sandbox.boot(); // Boot and save the sandboxed wiki
+                });
 
     });
 

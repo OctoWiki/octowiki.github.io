@@ -13,7 +13,7 @@ with her(the wiki).
     /*global $tw: false */
     "use strict";
 
-    var sandbox = {}, $$tw, previousState;
+    var sandbox = {}, $$tw, previousState, afterBoot;
 
     function boot (preloadTiddlers) {
         preloadTiddlers  = preloadTiddlers || [];
@@ -50,12 +50,24 @@ with her(the wiki).
            };
 
         this.tw = _boot($$tw); // Boot the $$tw object
-
+       
+        if(typeof afterBoot == "function"){
+            afterBoot(); //run an after Boot function if any
+        }
+        
         previousState = $tw.utils.extend({},$$tw.wiki.changeCount);
         $tw.OTW.Debug.log("Initial state of sandboxed wiki: ",previousState);
         return $$tw;
 
     };
+    
+    function registerAfterBootFunction(fn){
+        if(!(typeof fn === 'function')){
+           $tw.OTW.Debug.log("Can't register after boot function because it is not a function!");
+            return false;
+           }
+        afterBoot = fn;
+    }
 
     /*-- Force the navigation to the provided list of tiddlers
      closing all the other tiddlers --*/

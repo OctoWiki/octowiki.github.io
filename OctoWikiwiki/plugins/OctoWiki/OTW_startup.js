@@ -7,7 +7,7 @@ This module creates the basic structure needed for the plugin.
 This included the OTW Object namespace and the loading of the token
 \*/
 
-(function(){
+(function () {
 /*jslint node: true, browser: true */
 /*global $tw: false */
 "use strict";
@@ -91,6 +91,7 @@ exports.startup = function(){
         var currentRepository, repoName, repoFilter,
             itemsCount,itemsToLoad,loadedItems,
             defaultTiddlersPath ="tiddlers",
+        //--Repository specific functions
             setSelected = function(repo,name){
                 reset();
                 currentRepository = repo;
@@ -103,6 +104,18 @@ exports.startup = function(){
             getSelected = function(){
             return currentRepository;
         };
+        
+        function reset(){
+            currentRepository = null; repoName = null;
+            itemsCount = 0, itemsToLoad=0,loadedItems=0;
+        }
+        
+        function open(username,repoName,client){
+        //Opens a repository and caches it. Client is an optional github client object.
+            client = client || $tw.OTW.client;
+            var repository = client.getRepo(username, repoName);
+            setSelected(repository,repoName);
+        }
 
         /*
          Transliterate string from cyrillic russian to latin
@@ -116,6 +129,7 @@ exports.startup = function(){
             }).join("");
         };
 
+        //-- metadata related functions
         function generateTiddlerFilename(title,extension) {
             // First remove any of the characters that are illegal in Windows filenames
             var baseFilename = transliterate(title.replace(/<|>|\:|\"|\/|\\|\||\?|\*|\^|\s/g,"_"));
@@ -137,10 +151,7 @@ exports.startup = function(){
             return newTiddler
         }
 
-        function reset(){
-            currentRepository = null; repoName = null;
-            itemsCount = 0, itemsToLoad=0,loadedItems=0;
-        }
+
 
         function compileRepoFilter(){
         //Compiles the filter for fetching all the tiddlers related to current repository
@@ -244,6 +255,7 @@ exports.startup = function(){
             isSelected: isSelected,
             getSelected: getSelected,
             list: list,
+            open: open,
             indexTiddlers:indexRepoTiddlers,
             successRate:succcessRate,
             newMetadataTiddler:newMetadataTiddler,
