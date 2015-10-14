@@ -122,17 +122,11 @@ exports.startup = function(){
          Extracted from Tyddlywiki filesystem adaptor plugin:
          https://github.com/Jermolene/TiddlyWiki5/blob/268da52f8cde11ba21beec084210ad2d0a378a09/plugins/tiddlywiki/filesystem/filesystemadaptor.js#L80
          */
-        var transliterate = function(cyrillyc) {
-            var a = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"};
-            return cyrillyc.split("").map(function (char) {
-                return a[char] || char;
-            }).join("");
-        };
 
         //-- metadata related functions
         function generateTiddlerFilename(title,extension) {
             // First remove any of the characters that are illegal in Windows filenames
-            var baseFilename = transliterate(title.replace(/<|>|\:|\"|\/|\\|\||\?|\*|\^|\s/g,"_"));
+            var baseFilename = OTW.utils.transliterate(title.replace(/<|>|\:|\"|\/|\\|\||\?|\*|\^|\s/g,"_"));
             // Truncate the filename if it is too long
             if(baseFilename.length > 200) {
                 baseFilename = baseFilename.substr(0,200);
@@ -172,6 +166,7 @@ exports.startup = function(){
             return tiddlers;
         }
 
+        // List the repository recursivelly and calls the callback once done.
         function list(branch,callback){
             currentRepository.getTree(branch +'?recursive=true',function(err,tree){
                 if(err){
@@ -183,11 +178,12 @@ exports.startup = function(){
                 {
                     OTW.Debug.log("Repository tree: ",tree);
                     itemsCount = tree.length;
-                    callback(tree);
+                    callback(tree); //This callback usually loads the tiddlers from the list this function returns.
                 }
             });
         }
-
+        
+        // Loads a file from the current repository
         function loadFile(path,branch,callback){
             branch = branch || 'master';
             OTW.Debug.log("Fetching file: ",path, " from github");
@@ -386,6 +382,7 @@ exports.startup = function(){
         return path.substr(path.lastIndexOf("."))
     }
 
+    /* == DEPRECATED ==
     function isMetadata(fieldName){
         var metadataFields = {
             'otw-path':true,
@@ -393,27 +390,17 @@ exports.startup = function(){
         };
 
         return metadataFields[fieldName];
-    }
+    }*/
 
-    function getTiddler(title){ //A wrapper around the tiddler object
+    function getTiddler(title){ 
+        //A wrapper around the tiddler object
         var tiddler = $tw.wiki.getTiddler(title),
             fields = tiddler && tiddler.fields || {},
+            sandboxFields = OTW.sandbox.getTiddler(fields['otw-sandbox-title']),
             renderTemplates = { '.tid' : '$:/core/templates/tid-tiddler'};
 
         function getActualFields(){
-            var actualFields = {};
-            $tw.utils.each(fields,function(value,field){
-                if(isMetadata(field)) return; //We don't want metadata fields in the original file
-
-                var fieldName = field.replace('otw-','');
-                //Checking the original field name, instead of the modified makes us sure that we are not
-                // going to override a field converted from a metadata field like otw-title -> tittle
-                if( !actualFields.hasOwnProperty(field) ){
-                    actualFields[fieldName] = value
-                }
-            });
-
-            return actualFields;
+            return sandboxFields;
         }
 
         function getPath(){
@@ -422,11 +409,11 @@ exports.startup = function(){
 
         function getOwner(){
             var repoTiddler = $tw.wiki.getTiddler('$:/repositories/'+ fields.title);
-
             return repoTiddler && repoTiddler.fields['owner-login'];
         }
 
         function getRepository(){
+        //Returns a repository object this tiddler belongs to
             if( OTW.repository.isSelected(fields['otw-repository']) )
             return OTW.repository.getSelected();
             else {
@@ -435,17 +422,20 @@ exports.startup = function(){
         }
 
         function getRenderTemplate(){
-            /* Render as a tid file or just as a plain text file*/
+            /* use tid file template or just as a plain text file*/
             return renderTemplates[getFileExtension(fields['otw-path'])] || '$:/core/templates/plain-text-tiddler';
         }
 
         //returns tex representing a tiddler as its original file
         function renderTiddler(){
-            var githubFields = getActualFields();
-            $tw.wiki.addTiddler(new $tw.Tiddler(githubFields)); //add the tiddler with the fields it should have to be able to render it
-            var content = $tw.wiki.renderTiddler("text/plain",getRenderTemplate(),{variables: {currentTiddler: githubFields.title}});
-            $tw.wiki.deleteTiddler(githubFields.title);
+            var content = OTW.sandbox.renderTiddler("text/plain",getRenderTemplate(),sandboxFields.title);
             return content;
+        }
+        
+        function commit(message,cb){
+        // Commits the tiddler to it's corresponding repository
+            message = message || "Edited with OctoWiki!";
+            getRepository().write('master', getPath(), renderTiddler(), message, cb);
         }
 
         return {
@@ -481,7 +471,7 @@ exports.startup = function(){
     //====================================================
 
     function isTiddlerFile(path){
-        return $tw.OTW.utils.getTiddlerType(path)
+        return OTW.utils.getTiddlerType(path)
     }
 
     function registerFolder(folder,repoName){
@@ -527,6 +517,13 @@ exports.startup = function(){
     function getParentFolder(path){
         return path.substr(0,path.lastIndexOf('/'))
     }
+    
+    OTW.utils.transliterate = function(cyrillyc) {
+            var a = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"};
+            return cyrillyc.split("").map(function (char) {
+                return a[char] || char;
+            }).join("");
+        };
 
         /* --- OTW namespace creation and basic initialization---*/
     //===============================================================================0

@@ -51,14 +51,14 @@ exports.startup = function(){
 
     });
 
-    $tw.rootWidget.addEventListener("tm-otw-commit-tiddler",function(event){
-        var title = event.paramObject.tiddler,
-            message = event.paramObject.message,
-            tiddler = OTW.utils.getGithubTiddler(title);
-
-        OTW.Debug.log("Commiting tiddler ", title);
-
-        OTW.gitHub.commit(tiddler.getRepository(),tiddler.getPath(),tiddler.render(),message);
+    $tw.rootWidget.addEventListener("tm-otw-commit-wiki",function(event){
+        var data = $tw.wiki.getTiddlerData(pluginTitles.modified);
+        data && var modifiedTiddlers = data.tiddlers;
+        $tw.utils.each(modifiedTiddlers,function(tiddler){
+            OTW.utils.getGithubTiddler(tiddler.title).commit(function(result){
+                OTW.Debug.log("Tiddler commited!!",tiddler.title,result);
+            });
+        });
     });
 
     $tw.rootWidget.addEventListener("tm-otw-show-changes", function(event){

@@ -61,6 +61,15 @@ with her(the wiki).
 
     };
     
+    function close(){
+        $$tw.pageContainer.remove();
+        if(this.tw){
+            this.tw = null;
+        }
+        $$tw = null;
+        $tw.OTW.Debug.log("Sandboxed wiki closed");
+    }
+    
     function registerAfterBootFunction(fn){
         if(!(typeof fn === 'function')){
            $tw.OTW.Debug.log("Can't register after boot function because it is not a function!");
@@ -110,12 +119,36 @@ with her(the wiki).
             return {error:"The wiki has not booted!!"}
         }
     }
+    
+    function getTiddler(title){
+        checkState();
+        var tid = $$tw.wiki.getTiddler(title); //not sure if use this or the closure variable $$tw
+        return tid ? tid.fields : null
+    }
+    
+    function renderTiddler(outputType,template,title){
+        //Options should be an object including, at least, currentTiddler pointing to the tiddler you want to render.
+        // we have to do this way because we are using the second argument (which is usually the title) for the render template we want to use.
+        checkState();
+        return $$tw.wiki.renderTiddler(outputType,template,{variables: {currentTiddler: title}});
+    }
+    
+    function checkState(){
+        if( ! $$tw || ! $$tw.wiki){
+            Logger.log("Sandbox wiki has not booted!! ");
+            throw "Sandbox wiki has not booted!! ";
+        }else{
+            return true
+        }
+    }
 
     sandbox.boot = boot;
+    sandbox.close = close;
     sandbox.setOpenTiddlers = setOpenTiddlers;
     sandbox.openTiddler = openTiddler;
     sandbox.getChanges = getChanges;
     sandbox.resetChanges = resetChanges;
+    sandbox.getTiddler = getTiddler;
 
     exports.sandbox = sandbox;
 })();
