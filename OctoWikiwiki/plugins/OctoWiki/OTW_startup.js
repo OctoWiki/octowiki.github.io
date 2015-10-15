@@ -433,7 +433,7 @@ exports.startup = function(){
         return metadataFields[fieldName];
     }*/
 
-    function getTiddler(title){ 
+    function getTiddler (title){ 
         //A wrapper around the tiddler object
         var tiddler = $tw.wiki.getTiddler(title),
             fields = tiddler && tiddler.fields || {},
@@ -455,9 +455,10 @@ exports.startup = function(){
 
         function getRepository(){
         //Returns a repository object this tiddler belongs to
-            if( OTW.repository.isSelected(fields['otw-repository']) )
-            return OTW.repository.getSelected();
-            else {
+            if( ! fields['otw-repository'] || OTW.repository.isSelected(fields['otw-repository']))
+            { //if there is no repository defined we want to commit to current repository
+                return OTW.repository.getSelected();
+            }else {
                 return OTW.client.getRepo(getOwner(), fields['otw-repository'])
             }
         }
@@ -475,14 +476,21 @@ exports.startup = function(){
         
         function commit(message,cb){
         // Commits the tiddler to it's corresponding repository
-            message = message || "Edited with OctoWiki!";
-            getRepository().write('master', getPath(), renderTiddler(), message, cb);
+            if( typeof message === 'function'){
+                cb = message
+                message = "Edited with OctoWiki!"
+            } else
+                message = message || "Edited with OctoWiki!";
+            var filePath = getPath();
+            OTW.Debug.log("Committing tiddler ",filePath);
+            getRepository().write('master', filePath, renderTiddler(), message, cb);
         }
 
         return {
             getActualFields: getActualFields,
             getRenderTemplate: getRenderTemplate,
             render: renderTiddler,
+            commit:commit,
             getPath: getPath,
             getOwner: getOwner,
             getRepository: getRepository
@@ -531,8 +539,8 @@ exports.startup = function(){
 
     function registerFile(metadata,repoName){
         var tiddlerFiles=OTW.sandbox.files,
-            metadataTiddler = {},
-            tiddlerFields = copyFieldsAsOctoFields({},metadata);
+            metadataTiddler = {}, // object to access private methods and allow concatenated calls
+            tiddlerFields = copyFieldsAsOctoFields({'otw-repository':repoName} , metadata); //Fields to be added to the wiki store
         tiddlerFields.title = [repoName,metadata.path].join('/');
 
         var parent = OTW.sandbox.folders[getParentFolder(tiddlerFields.title)];

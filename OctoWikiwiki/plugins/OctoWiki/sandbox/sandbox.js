@@ -149,6 +149,7 @@ with her(the wiki).
     sandbox.getChanges = getChanges;
     sandbox.resetChanges = resetChanges;
     sandbox.getTiddler = getTiddler;
+    sandbox.renderTiddler = renderTiddler;
 
     exports.sandbox = sandbox;
 })();

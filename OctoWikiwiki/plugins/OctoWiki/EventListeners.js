@@ -52,7 +52,7 @@ exports.startup = function(){
     });
 
     $tw.rootWidget.addEventListener("tm-otw-commit-wiki",function(event){
-        var data = $tw.wiki.getTiddlerData(pluginTitles.modified);
+        var data = $tw.wiki.getTiddlerData(pluginTitles.modified),
         modifiedTiddlers = data ? data.tiddlers : null;
         $tw.utils.each(modifiedTiddlers,function(tiddler){
             OTW.utils.getGithubTiddler(tiddler.title).commit(function(result){
