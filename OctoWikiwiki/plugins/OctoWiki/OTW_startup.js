@@ -28,7 +28,7 @@ exports.startup = function(){
         //============================
 
         var logger = new $tw.utils.Logger("OTW"),
-            OTW = { utils: {}, gitHub:{} }; // Our main scope!
+            OTW = { utils: {}, gitHub:{}, wiki: $tw.wiki }; // Our main scope!
             OTW.sandbox = require('$:/plugins/danielo515/OctoWiki/sandbox').sandbox;
             OTW.sandbox.tiddlers = []; //Store for the tiddlers to sandbox
             OTW.sandbox.folders = {}; //Hasmap of folders
@@ -97,6 +97,7 @@ exports.startup = function(){
                 currentRepository = repo;
                 repoName = name;
                 compileRepoFilter();
+                setTiddlerText("$:/state/OTW/Repository/Selected" , name);
             },
             isSelected = function (name) {
             return repoName === name;
@@ -105,23 +106,61 @@ exports.startup = function(){
             return currentRepository;
         };
         
+        function getDefaultPath(title){ 
+            var filename = generateTiddlerFilename(title,'.tid')
+            return [defaultTiddlersPath,filename].join('/');     
+        }
+        
+        function renderWelcomeTiddler(){
+            var template = '$:/plugins/danielo515/OctoWiki/templates/welcome-message.tid';
+            //The template we are using expects the title to be a variable. That way we can override the default value
+            return $tw.wiki.renderTiddler('text/plain',template,
+                                          {variables: {currentTiddler: '$:/plugins/danielo515/OctoWiki/templates/GettingStarted',
+                                                       title:'GettingStarted'}});
+        }
+        
         function reset(){
             currentRepository = null; repoName = null;
             itemsCount = 0, itemsToLoad=0,loadedItems=0;
         }
         
-        function open(username,repoName,client){
-        //Opens a repository and caches it. Client is an optional github client object.
+        function open(username,repoName,client){ // Improve: validation
+        /*  Opens a repository and caches it. 
+            Acepts both a list of arguments or a valid repository object
+            Client is an optional github client object.*/
             client = client || $tw.OTW.client;
+            if( typeof arguments[0] === 'object'){ // if the first argument is a repository object use it as source of all parameters
+                username = arguments[0].owner.login;
+                repoName = arguments[0].name;
+            }
             var repository = client.getRepo(username, repoName);
             setSelected(repository,repoName);
+            return repository
         }
-
-        /*
-         Transliterate string from cyrillic russian to latin
-         Extracted from Tyddlywiki filesystem adaptor plugin:
-         https://github.com/Jermolene/TiddlyWiki5/blob/268da52f8cde11ba21beec084210ad2d0a378a09/plugins/tiddlywiki/filesystem/filesystemadaptor.js#L80
-         */
+        
+        function newRepository(repoConfig,cb){
+            //Creates a new repository and opens it, which makes it the selected one.
+            OTW.user.createRepo(repoConfig, function(err, repoDefinition) {
+                // the response ins not an actual repository object. Is a repository definition.
+                if(err){
+                    logger.alert("Was impossible to create the repository:",JSON.stringify(err));
+                } else{
+                    /*Register the new repository as a tiddler. 
+                    This is important because this is a source of information for many functions*/
+                    $tw.wiki.addTiddler(repoToTiddler(repoDefinition)); 
+                    open(repoDefinition).write(
+                        'master', getDefaultPath('GettingStarted'), renderWelcomeTiddler(), 'Initial commit with OctoWiki!',
+                        function(err) {
+                            if(err){
+                                logger.alert("There was an issue with the first commit!!",JSON.stringify(err));
+                                return
+                            }
+                            cb(repoDefinition);
+                        }
+                    );
+                }
+            });
+        }
 
         //-- metadata related functions
         function generateTiddlerFilename(title,extension) {
@@ -171,7 +210,7 @@ exports.startup = function(){
             currentRepository.getTree(branch +'?recursive=true',function(err,tree){
                 if(err){
                     OTW.Debug.log('Error listing repository! ',err);
-                    console.log('The repository was nos listed. Aborting');
+                    logger.alert('The repository was nos listed. Aborting');
                     return
                 }
                 else
@@ -252,9 +291,11 @@ exports.startup = function(){
             getSelected: getSelected,
             list: list,
             open: open,
+            newRepository:newRepository,
             indexTiddlers:indexRepoTiddlers,
             successRate:succcessRate,
             newMetadataTiddler:newMetadataTiddler,
+            renderWelcomeTiddler: renderWelcomeTiddler,
             load:load
         }
     };
@@ -517,6 +558,12 @@ exports.startup = function(){
     function getParentFolder(path){
         return path.substr(0,path.lastIndexOf('/'))
     }
+    
+/*
+Transliterate string from cyrillic russian to latin
+Extracted from Tyddlywiki filesystem adaptor plugin:
+https://github.com/Jermolene/TiddlyWiki5/blob/268da52f8cde11ba21beec084210ad2d0a378a09/plugins/tiddlywiki/filesystem/filesystemadaptor.js#L80
+*/
     
     OTW.utils.transliterate = function(cyrillyc) {
             var a = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"};

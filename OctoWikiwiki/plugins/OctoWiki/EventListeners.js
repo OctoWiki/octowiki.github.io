@@ -53,7 +53,7 @@ exports.startup = function(){
 
     $tw.rootWidget.addEventListener("tm-otw-commit-wiki",function(event){
         var data = $tw.wiki.getTiddlerData(pluginTitles.modified);
-        data && var modifiedTiddlers = data.tiddlers;
+        modifiedTiddlers = data ? data.tiddlers : null;
         $tw.utils.each(modifiedTiddlers,function(tiddler){
             OTW.utils.getGithubTiddler(tiddler.title).commit(function(result){
                 OTW.Debug.log("Tiddler commited!!",tiddler.title,result);
@@ -121,6 +121,21 @@ exports.startup = function(){
 
     $tw.rootWidget.addEventListener("tm-otw-logout", function(event){
         OTW.logout();
+    });
+    
+    $tw.rootWidget.addEventListener("tm-otw-new-repository", function(event){
+        var repoName = event.param || event.paramObject.repository || null;
+        if(!repoName){
+            OTW.Debug.log("Can't create null repository!");
+            return;
+        }
+        OTW.repository.newRepository({'name': repoName, 'description':'Created with OctoWiki!'},function(repo){
+            OTW.repository.load('master',function(rate)
+                {
+                    OTW.Debug.log("Repository loaded!! ",rate);
+                    OTW.sandbox.boot(); // Boot the sandboxed wiki
+                });
+        });
     });
 
     $tw.rootWidget.addEventListener("tm-otw-set-token",function(event) {

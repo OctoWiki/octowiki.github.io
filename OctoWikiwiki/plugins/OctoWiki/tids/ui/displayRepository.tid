@@ -39,7 +39,7 @@ tags: $:/OTW/UI
     <$action-sendmessage $message="tm-otw-sandbox-open-tiddler" tiddler=<<currentTiddler>>/>
     <$macrocall $name="removepath" filename=<<currentTiddler>>/>
 </$button></dt>
-<dd><$view field="otw-title"/></dd>
+<dd><$view field="otw-sandbox-title"/></dd>
 </dl>
 \end
 

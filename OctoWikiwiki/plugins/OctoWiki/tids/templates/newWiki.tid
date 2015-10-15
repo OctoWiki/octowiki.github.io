@@ -1,0 +1,20 @@
+title: $:/plugins/danielo515/OctoWiki/templates/GettingStarted
+
+! Congratulations!
+
+You have just created a new tiddlywiki using OctoWiki !!
+If everything went well you should be now in the sandboxMode. 
+This is a very inmersive mode where you can edit your wiki without distractions.
+By default tiddlers are saved to `tiddlers/` folder on the root of your Github repository.
+
+Note the OctoWiki icon in the ''top left corner''. 
+It is the key to interact with OctoWiki interface. Clikcing on it you can:
+
+* Close this wiki
+* Save changes to this wiki clicking on `commit`
+* Logout from your session
+* Navigate your repository files
+
+Now a warm message from tiddlywiki community:
+
+<$transclude tiddler="$:/core" subtiddler="GettingStarted"/>

@@ -23,7 +23,7 @@ Macro that removes the path part of an absolute filename
      Run the macro
      */
     exports.run = function(filename) {
-        return filename.substr(filename.lastIndexOf('/')+1);
+        return filename.substr(filename.lastIndexOf('/')+1).toString();
     };
 
 })();

@@ -1,22 +1,22 @@
-title: $:/plugins/danielo515/OctoWiki/userRepos
+title: $:/plugins/danielo515/OctoWiki/Repositories
 
 Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tiddler="$:/state/repositories/filter"></$edit-text>
 
 <$set name="thisTiddler" value=<<currentTiddler>> >
 <table>
 <thead class="evenRow"><tr><td>Repository</td><td>Description</td></tr></thead>
-<$list filter="[prefix[$:/repositories/]search{$:/state/repositories/filter}sort[title]]">
+<$list filter="[prefix[$:/repositories/]search{$:/state/repositories/filter}sort[title]]" emptyMessage="""<$transclude tiddler="$:/plugins/danielo515/OctoWiki/newRepo"/>""">
 <tr>
     <td>
         <$button class="tc-btn-invisible tc-tiddlylink">
             <$action-sendmessage $message="tm-otw-load-repository" username={{!!owner-login}} repository={{!!name}}/>
             <$action-sendmessage $message="tm-close-all-tiddlers"/>
-            <$action-setfield $tiddler="$:/state/OTW/Repository/Selected" $field="text" $value={{!!name}}/>
+            <!-- <$action-setfield $tiddler="$:/state/OTW/Repository/Selected" $field="text" $value={{!!name}}/> -->
             <$action-navigate $to="$:/plugins/danielo515/OctoWiki/Repository/Files"/>
-            {{!!name}}
+            <$view field="name"/>
         </$button>
     </td>
-    <td>{{!!description}}</td>
+    <td><$view field="description"/></td>
 </tr>
 
 </$list>
