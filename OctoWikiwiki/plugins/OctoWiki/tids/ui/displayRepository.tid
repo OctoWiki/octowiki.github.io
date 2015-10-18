@@ -37,7 +37,7 @@ tags: $:/OTW/UI
 \define listFile(parent)
 <dl><dt><$button class="tc-btn-invisible tc-tiddlylink">
     <$action-sendmessage $message="tm-otw-sandbox-open-tiddler" tiddler=<<currentTiddler>>/>
-    <$macrocall $name="removepath" filename=<<currentTiddler>>/>
+    <$macrocall $name="removepath" filename=<<currentTiddler>> $output="text/plain"/>
 </$button></dt>
 <dd><$view field="otw-sandbox-title"/></dd>
 </dl>
