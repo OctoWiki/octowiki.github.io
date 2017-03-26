@@ -1,0 +1,14 @@
+[
+    {
+        "created": "20170326111758183",
+        "text": "hide",
+        "title": "$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/more-tiddler-actions",
+        "modified": "20170326111758183"
+    },
+    {
+        "created": "20170326111800211",
+        "text": "hide",
+        "title": "$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/edit",
+        "modified": "20170326111800211"
+    }
+]

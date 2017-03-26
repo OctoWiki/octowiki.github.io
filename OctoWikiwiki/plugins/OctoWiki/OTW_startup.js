@@ -381,8 +381,8 @@ exports.startup = function(){
     //====================================================
 
     function setDefaultTiddlers(){
-        var unloggedUser=['$:/plugins/danielo515/OctoWiki','OctoWiki'],
-            loggedUser=['$:/plugins/danielo515/OctoWiki','Repositories'],
+        var unloggedUser=['OctoWiki'],
+            loggedUser=['Repositories'],
             tiddlersTitles = OTW.config.hasToken() ? loggedUser : unloggedUser;
 
         $tw.wiki.setText('$:/DefaultTiddlers','text',null,tiddlersTitles.join('\n'));

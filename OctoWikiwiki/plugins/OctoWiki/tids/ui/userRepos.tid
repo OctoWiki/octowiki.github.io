@@ -1,7 +1,9 @@
 title: $:/plugins/danielo515/OctoWiki/Repositories
 
 Filter: <$edit-text tag="input" default="" placeholder="Filter repositories" tiddler="$:/state/repositories/filter"></$edit-text>
+<br>,,Type a non existing name on the search box to create a new repository,,
 
+''Make sure to select a repository containing tiddlywiki5 compatible files!!''
 <$set name="thisTiddler" value=<<currentTiddler>> >
 <table>
 <thead class="evenRow"><tr><td>Repository</td><td>Description</td></tr></thead>

@@ -54,7 +54,16 @@ exports.startup = function(){
     $tw.rootWidget.addEventListener("tm-otw-commit-wiki",function(event){
         var data = $tw.wiki.getTiddlerData(pluginTitles.modified),
         modifiedTiddlers = data ? data.tiddlers : null;
+        OTW.Debug.log('About to commit modified tiddlers...',modifiedTiddlers);
         $tw.utils.each(modifiedTiddlers,function(tiddler){
+            OTW.utils.getGithubTiddler(tiddler.title).commit(function(result){
+                OTW.Debug.log("Tiddler commited!!",tiddler.title,result);
+            });
+        });
+        var data = $tw.wiki.getTiddlerData(pluginTitles.new),
+        newTiddlers = data ? data.tiddlers : null;
+        OTW.Debug.log('About to commit new tiddlers...',newTiddlers);
+        $tw.utils.each(newTiddlers,function(tiddler){
             OTW.utils.getGithubTiddler(tiddler.title).commit(function(result){
                 OTW.Debug.log("Tiddler commited!!",tiddler.title,result);
             });
@@ -125,6 +134,7 @@ exports.startup = function(){
 
     $tw.rootWidget.addEventListener("tm-otw-immersive-mode", function(event){
         $tw.pageContainer.setAttribute('hidden','true');
+        OTW.activateSandboxMode();
     });
     
     $tw.rootWidget.addEventListener("tm-otw-new-repository", function(event){

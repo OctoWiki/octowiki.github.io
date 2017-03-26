@@ -1,10 +1,13 @@
 {
-  "name": "Octowiki",
-  "version": "0.0.5",
+  "name": "octowiki",
+  "version": "0.0.6",
   "description": "Save,edit and publish your wikis on github",
   "main": "''",
   "scripts": {
-    "test": "./develop.sh"
+    "styles": "gulp sass",
+    "watch": "gulp sass:watch",
+    "start": "./develop.sh",
+    "build": "npm run styles && bash -x bld.sh"
   },
   "repository": {
     "type": "git",
