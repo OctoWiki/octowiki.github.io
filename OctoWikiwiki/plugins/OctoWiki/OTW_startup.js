@@ -433,11 +433,19 @@ exports.startup = function(){
         return metadataFields[fieldName];
     }*/
 
+    /**
+     * 
+     * @param {String|Object} The tittle of the tiddler or a metadata object representing a new tiddler.
+     */
     function getTiddler (title){ 
         //A wrapper around the tiddler object
-        var tiddler = $tw.wiki.getTiddler(title),
-            fields = tiddler && tiddler.fields || {},
-            sandboxFields = OTW.sandbox.getTiddler(fields['otw-sandbox-title']),
+        if( typeof title === 'string'){
+            var tiddler = $tw.wiki.getTiddler(title),
+            fields = tiddler && tiddler.fields || {}
+        } else {
+            var fields = title;
+        }
+            var sandboxFields = OTW.sandbox.getTiddler(fields['otw-sandbox-title']),
             renderTemplates = { '.tid' : '$:/core/templates/tid-tiddler'};
 
         function getActualFields(){

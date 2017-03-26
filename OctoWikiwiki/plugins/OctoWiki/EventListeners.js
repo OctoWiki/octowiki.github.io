@@ -64,7 +64,7 @@ exports.startup = function(){
         newTiddlers = data ? data.tiddlers : null;
         OTW.Debug.log('About to commit new tiddlers...',newTiddlers);
         $tw.utils.each(newTiddlers,function(tiddler){
-            OTW.utils.getGithubTiddler(tiddler.title).commit(function(result){
+            OTW.utils.getGithubTiddler(tiddler).commit(function(result){
                 OTW.Debug.log("Tiddler commited!!",tiddler.title,result);
             });
         });
@@ -81,7 +81,7 @@ exports.startup = function(){
                 changedTiddlers={tiddlers:{}};
             $tw.utils.each(tiddlers,function(tiddler){
                 console.log("Packing ",tiddler.title," Into ",customFields.title);
-                changedTiddlers.tiddlers[tiddler.title]= tiddler;
+                changedTiddlers.tiddlers[tiddler.title] = tiddler;
             });
             customFields.text = JSON.stringify(changedTiddlers,null,$tw.config.preferences.jsonSpaces);
             return new $tw.Tiddler(template,customFields)
