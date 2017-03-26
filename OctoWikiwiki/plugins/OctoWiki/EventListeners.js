@@ -122,6 +122,10 @@ exports.startup = function(){
     $tw.rootWidget.addEventListener("tm-otw-logout", function(event){
         OTW.logout();
     });
+
+    $tw.rootWidget.addEventListener("tm-otw-immersive-mode", function(event){
+        $tw.pageContainer.setAttribute('hidden','true');
+    });
     
     $tw.rootWidget.addEventListener("tm-otw-new-repository", function(event){
         var repoName = event.param || event.paramObject.repository || null;
