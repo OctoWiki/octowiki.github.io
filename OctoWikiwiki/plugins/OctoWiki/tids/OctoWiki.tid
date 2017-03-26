@@ -15,10 +15,15 @@ All the power of Tiddlywiki along with all Github's capabilities (collaborative 
 
 It is like a Markdown online editor (like [ext[prose.io|http://prose.io]]) but for Tiddlywiki!!
 
+Use the form below to grant OctoWiki access to your repositories. ''After that'', you will be shown a __list with all your repositories__. Select any of them that ''contains tiddlywiki files''
+and OctoWiki will load it.
+
 <$transclude tiddler="Login" mode="block" />
+
+!! If you want some more info about OctoWiki take a look to the [[ReadMe]]
 
 Have doubts?:
 
- * Read the [[F.A.Q.]]
- * Visit the [[project's repo]]
+ * Read the [[F.A.Q.|FAQ]]
+ * Visit the [[project's repo|https://github.com/OctoWiki/octowiki.github.io]]
  * Visit [[tiddlywiki's  official support group |https://groups.google.com/forum/#!forum/tiddlywiki]]

@@ -1,0 +1,10 @@
+title: $:/plugins/danielo515/OctoWiki/templates/welcome-message.tid
+
+<!--
+
+This template is used for saving the welcome message tiddler
+
+-->title: <<title>>`
+`<$fields exclude='text bag title' template='$name$: $value$
+'></$fields>`
+`<$view field="text" format="text" />

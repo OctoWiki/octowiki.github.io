@@ -1,0 +1,7 @@
+title: FAQ
+
+<$list filter="[all[shadows]tag[$:/OTW/FAQ]]">
+
+!! {{!!title}}
+<$transclude mode="block"/>
+</$list>

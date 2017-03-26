@@ -1,0 +1,20 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Sandbox/Sidebar
+
+<div class="otw-sidebar-controls">
+<$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Sandbox/Toolbar" mode="inline"/>
+</div>
+<div class="otw-sidebar-content table">
+    <div class="otw-sidebar-header table-row table-header">
+        <$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Sidebar/Logged" mode="inline"/>
+        <!--Login button is transcluded directly because when not logged in is the only button -->
+        <h1><$transclude tiddler="$:/plugins/danielo515/OctoWiki/ui/Buttons/Login" mode="inline"/></h1>
+        <hr style="width:90%;margin:0px">
+    </div>
+    <div class="otw-sidebar-body table-row table-body">
+     <div class="table-body-wrapper">
+        <div class="table-body-content">
+            <$transclude tiddler="$:/plugins/danielo515/OctoWiki/Repository/Files"/>
+        </div>
+      </div>
+    </div>
+</div>

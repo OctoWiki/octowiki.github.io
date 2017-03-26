@@ -1,0 +1,6 @@
+title: $:/plugins/danielo515/OctoWiki/newRepo
+
+<$button>
+<$action-sendmessage $message="tm-otw-new-repository" $param={{$:/state/repositories/filter}}/>
+Create new repository <$view tiddler="$:/state/repositories/filter"/>
+</$button>

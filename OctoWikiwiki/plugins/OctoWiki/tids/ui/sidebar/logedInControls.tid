@@ -1,0 +1,5 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Sidebar/Logged
+
+<$reveal type="match" state="$:/state/OctoWiki/IsLogged" text="yes">
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/OTW/controls/logged]]"><h1><$transclude/></h1></$list>
+</$reveal>

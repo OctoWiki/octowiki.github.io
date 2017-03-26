@@ -1,0 +1,35 @@
+/**** TiddlyWiki ***************************************************/
+/**
+ * Do not allow blurred background for dialogs
+ * see: https://github.com/Jermolene/TiddlyWiki5/issues/1893
+ */
+.tc-page-container-wrapper.tc-modal-displayed {
+  -webkit-filter: inherit;
+  -moz-filter: inherit;
+  filter: inherit; }
+
+.otw-input {
+  border: 1px solid #aaaaaa;
+  width: 90%; }
+
+.otw-small-column {
+  padding: 0px;
+  margin: 0px;
+  text-align: center; }
+
+.tc-modal-wrapper {
+  z-index: 1010; }
+  .tc-modal-wrapper .tc-modal-body .otw-input {
+    width: 100%; }
+  .tc-modal-wrapper .tc-modal-body .tc-btn-big-green {
+    margin: 0px; }
+    .tc-modal-wrapper .tc-modal-body .tc-btn-big-green:hover {
+      background-color: #44d845; }
+  .tc-modal-wrapper .tc-modal-body .otw-red {
+    background-color: #FF1010; }
+    .tc-modal-wrapper .tc-modal-body .otw-red:hover {
+      background-color: #F54C4C; }
+  .tc-modal-wrapper .tc-modal-body table.deleted tbody td {
+    background-color: #ffecec; }
+  .tc-modal-wrapper .tc-modal-body table.new tbody td, .tc-modal-wrapper .tc-modal-body table.modified tbody td {
+    background-color: #eaffea; }

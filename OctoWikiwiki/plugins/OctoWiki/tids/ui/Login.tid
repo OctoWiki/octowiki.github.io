@@ -1,0 +1,14 @@
+title: Login
+subtitle: Github login
+
+''Personal token:'' <$edit-text tag="input" class="otw-input" default="" placeholder=" Github token" tiddler="$:/state/OTW-token"/>
+
+<$button class="tc-btn-big-green" style="width:100%">
+   <$action-sendmessage $message="tm-otw-set-token" token={{$:/state/OTW-token}} />
+   {{$:/core/images/github}}
+   Login
+</$button>
+
+[[Don't have a token?|How to get a token]]
+
+,,[[What are you doing with my token?|F.A.Q Where/how do you store my personal access token?]],,

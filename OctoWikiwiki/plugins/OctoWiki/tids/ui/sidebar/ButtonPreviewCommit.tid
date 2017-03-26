@@ -1,0 +1,10 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Buttons/Commit
+tags: $:/tags/OTW/controls/logged
+
+<$button class="tc-btn-invisible tc-tiddlylink"
+aria-label = {{$:/plugins/danielo515/OctoWiki/language/Buttons/Commit/Caption}}
+tooltip = {{$:/plugins/danielo515/OctoWiki/language/Buttons/Commit/Caption}}>
+   <$action-sendmessage $message="tm-otw-show-changes"/>
+   <$action-sendmessage $message="tm-modal" $param="$:/plugins/danielo515/OctoWiki/Repository/Files/Changes"/>
+          Commit
+</$button>

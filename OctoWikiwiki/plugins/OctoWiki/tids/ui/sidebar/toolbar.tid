@@ -1,0 +1,16 @@
+title: $:/plugins/danielo515/OctoWiki/ui/Sandbox/Toolbar
+
+<$reveal state="$:/state/OTW/sidebar/open" type="nomatch" text="yes" default="no" retain="yes">
+    <$button class="tc-btn-invisible otw-sidebar-open">
+    <$action-setfield $tiddler="$:/plugins/danielo515/OctoWiki/Styles/Sidebar/Open" tags="$:/tags/Stylesheet" />
+    <$action-setfield $tiddler="$:/state/OTW/sidebar/open" text="yes" />
+        {{$:/plugins/danielo515/OctoWiki/Images/Octopus}}
+    </$button>
+</$reveal>
+<$reveal state="$:/state/OTW/sidebar/open" type="match" text="yes" default="no" retain="yes">
+    <$button class="tc-btn-invisible">
+    <$action-setfield $tiddler="$:/plugins/danielo515/OctoWiki/Styles/Sidebar/Open" tags="" />
+    <$action-setfield $tiddler="$:/state/OTW/sidebar/open" text="no" />
+        {{$:/plugins/danielo515/OctoWiki/Images/Octopus}}
+    </$button>
+</$reveal>

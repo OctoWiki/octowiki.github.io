@@ -3,7 +3,30 @@ modified: 20140901120057909
 title: ReadMe
 type: text/vnd.tiddlywiki
 
-! HelloThere
+! OctoWiki
 
-{{HelloThere}}
+ Welcome to OctoWiki, the online editor of Tiddlywiki5 repositories that are hosted at Github.
 
+ OctoWiki is a web app that allows you to edit Tiddlywiki5 GitHub repositories just like you were editing a real tiddlywiki file.
+
+!! Why OctoWiki
+
+ Having your wiki files on Github is very convenient, for several reasons:
+
+ * Several users can contribute
+ * You get version and history control
+ * You have them online and can edit them from github if you are in a hurry
+
+ However, it has some drawbacks:
+
+ * You don't have any way to preview the result, making the editing much harder
+ * You lose all the interactivity and tools that tiddlywiki provides, which defeats the purpose of using it at all.
+
+OctoWiki fills that gap, allowing you to host your tiddlywiki wikies at github, while preserving the interactivity and editing possibilities a full pledged tiddlywiki offers.
+Take a look to the screenshots to see how well it looks!
+
+
+!! Screenshots
+
+<img src="./images/screenshots/commitChanges.png" alt="Commit changes screenshot">
+<img src="./images/screenshots/selectingRepos.png.png" alt="Commit changes screenshot">

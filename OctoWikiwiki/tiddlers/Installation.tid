@@ -3,7 +3,5 @@ created: 20140901120057909
 modified: 20140901120057909
 type: text/vnd.tiddlywiki
 
-# Open your wiki in a browser
-# Drag this link into your wiki
-#> [[$:/plugins/danielo515/OctoWiki]]
-# Save your wiki
+This is not intended to be installed on any tiddlywiki.
+It's purpose is to be used as a web app to edit your wikis hosted on github.

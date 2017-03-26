@@ -6,8 +6,5 @@ description: Commit a tiddler to Github
 tooltip="Cancel edition"
 aria-label="Cancel" >
 <span class="tc-btn-text">Cancel</span>
-<$action-sendmessage $message="tm-close-all-tiddlers"/>
-<$action-navigate $to="$:/plugins/danielo515/OctoWiki/Repository/Files"/>
-<$action-setfield $tiddler="$:/state/OTW/editedTiddler" $field="text" $value=""/>
-
+<$action-sendmessage $message="tm-close-tiddler"/>
 </$button>

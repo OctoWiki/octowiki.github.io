@@ -1,3 +1,5 @@
 title: $:/plugins/danielo515/OctoWiki/ui/Loading
 
-{{$:/core/images/info-button}}
+<$reveal type="nomatch" state="$:/state/OTW/Repository/Selected" text="none">
+                 {{$:/core/images/info-button}}
+</$reveal>

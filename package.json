@@ -1,0 +1,31 @@
+{
+  "name": "octowiki",
+  "version": "0.0.6",
+  "description": "Save,edit and publish your wikis on github",
+  "main": "''",
+  "scripts": {
+    "styles": "gulp sass",
+    "watch": "gulp sass:watch",
+    "start": "./develop.sh",
+    "build": "npm run styles && bash -x bld.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/danielo515/OctoWiki.git"
+  },
+  "keywords": [
+    "wiki",
+    "tiddlywiki",
+    "github"
+  ],
+  "author": "Danielo Rodriguez Rivero",
+  "license": "BSD3",
+  "bugs": {
+    "url": "https://github.com/danielo515/OctoWiki/issues"
+  },
+  "homepage": "https://github.com/danielo515/OctoWiki",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-sass": "^2.0.4"
+  }
+}
