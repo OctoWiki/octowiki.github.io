@@ -3,7 +3,7 @@
 # Build SamplePlugin for TiddlyWiki5
 
 tiddlywiki \
-	./*wiki \
+	./wiki \
 	--verbose \
 	--build \
 	|| exit 1
